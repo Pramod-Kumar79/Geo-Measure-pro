@@ -1,0 +1,3955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Title and Meta Description with i18n attributes for dynamic translation -->
+  <title data-i18n="pageTitle">GeoMeasure Pro - Professional Land & Construction Measurement Tools</title>
+  <meta name="description" data-i18n="metaDescription" content="Advanced land measurement and construction calculator with multiple unit conversions, mapping tools, and professional reporting">
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Leaflet CSS for map functionality -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+
+  <style>
+    /* Root variables for consistent theming */
+    :root {
+      --primary: #28a745; /* A vibrant green */
+      --primary-light: #4bd16b;
+      --primary-dark: #1e7e34;
+      --secondary: #007bff; /* A professional blue for accents */
+      --secondary-dark: #0056b3;
+      --dark: #343a40; /* Darker text */
+      --darker: #212529; /* Even darker for footer background */
+      --light: #f8f9fa; /* Light background */
+      --lighter: #ffffff; /* White for cards */
+      --gray: #6c757d;
+      --light-gray: #e9ecef; /* For borders and subtle backgrounds */
+      --white: #ffffff;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08); /* Softer, larger shadow */
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.12); /* Even larger for hover */
+      --transition: all 0.3s ease-in-out;
+      --border-radius: 8px;
+    }
+
+    /* Global reset and font styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif; /* Using Google Font */
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: var(--white);
+      padding: 1rem 0;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000; /* Higher z-index */
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.8rem; /* Larger logo */
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    .logo i {
+      color: var(--secondary);
+      font-size: 1.5em;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 30px; /* More spacing */
+    }
+
+    nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      padding: 0.75rem 1.25rem; /* Larger clickable area */
+      border-radius: var(--border-radius);
+      position: relative;
+    }
+
+    nav a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: var(--secondary);
+        transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+    }
+
+    nav a:hover::after, nav a.active::after {
+        width: 100%;
+        left: 0;
+    }
+
+    nav a:hover, nav a.active {
+      background-color: rgba(255,255,255,0.15); /* Slightly stronger hover */
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.8rem; /* Larger icon */
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .mobile-menu-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    /* Language Switcher */
+    .language-switcher {
+      margin-left: 20px; /* Adjust spacing as needed */
+      display: flex; /* Ensure buttons align horizontally */
+      gap: 10px; /* Space between buttons */
+    }
+
+    .language-switcher button {
+      background-color: var(--secondary);
+      color: var(--white);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color var(--transition);
+    }
+
+    .language-switcher button:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .language-switcher button.active {
+        background-color: var(--primary-light); /* Highlight active language */
+        cursor: default;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/1500x500/007bff/ffffff?text=GeoMeasure+Pro+Banner') no-repeat center center/cover;
+        color: var(--white);
+        text-align: center;
+        padding: 100px 20px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        margin-bottom: 40px;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .hero h1 {
+        font-size: 3.5em;
+        margin-bottom: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.3em;
+        max-width: 700px;
+        margin: 0 auto 30px;
+        font-weight: 300;
+    }
+
+    .cta-button {
+        display: inline-block;
+        background-color: var(--secondary);
+        color: var(--white);
+        padding: 15px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1em;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+
+    .cta-button:hover {
+        background-color: var(--secondary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Section Title for Feature Section */
+    .section-title {
+        text-align: center;
+        font-size: 2.5em;
+        color: var(--primary-dark);
+        margin-bottom: 40px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: var(--secondary);
+        border-radius: 2px;
+    }
+
+    /* Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .feature-card {
+        background-color: var(--lighter);
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        border: 1px solid #e0e0e0;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+    }
+
+    .feature-card .icon {
+        font-size: 3.5em;
+        color: var(--primary);
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.5em;
+        color: var(--darker);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .feature-card p {
+        color: var(--gray);
+        font-size: 0.95em;
+    }
+
+    /* Main Click Bar (Accordion Header) */
+    .main-click-bar, .field-diagram-bar, .section-header {
+      background: var(--lighter); /* White background */
+      color: var(--dark);
+      padding: 20px 25px; /* More padding */
+      margin: 40px 0 0;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--light-gray); /* Subtle border */
+      font-size: 1.15rem; /* Slightly larger text */
+      font-weight: 600;
+    }
+
+    .main-click-bar:hover, .field-diagram-bar:hover, .section-header:hover {
+      transform: translateY(-3px); /* More noticeable lift */
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary); /* Highlight on hover */
+    }
+
+    .main-click-bar h1, .section-header h3 {
+      font-size: 1.6rem; /* Larger heading */
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px; /* More space for icon */
+      color: var(--primary-dark); /* Darker primary color */
+    }
+
+    .main-click-bar h1 i, .section-header h3 i {
+      color: var(--primary);
+    }
+
+    .main-click-bar .arrow, .section-header .arrow {
+      transition: transform 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .main-click-bar.active .arrow, .section-header.active .arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Calculator Content (Accordion Body) */
+    .calculator-content {
+      background: var(--lighter);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Slower, smoother transition */
+      border: 1px solid var(--light-gray);
+      border-top: none; /* Blends with header */
+      margin-bottom: 30px;
+    }
+
+    .calculator-content.active {
+      padding: 30px;
+      max-height: 5000px; /* Sufficiently large for all content */
+    }
+
+    /* Field Diagram Section */
+    .field-diagram-bar {
+      margin-top: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      background-color: var(--light); /* Lighter background for nested accordion */
+    }
+
+    .field-diagram-content {
+      background: var(--lighter);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+      text-align: center;
+      border: 1px solid var(--light-gray);
+      border-top: none;
+      margin-bottom: 20px;
+    }
+
+    .field-diagram-content.active {
+      max-height: 500px;
+      padding: 20px;
+    }
+
+    .field-rep {
+      font-family: 'Courier New', monospace; /* More classic monospace */
+      white-space: pre;
+      text-align: center;
+      margin: 15px 0;
+      font-size: 1.3rem; /* Slightly larger */
+      line-height: 1.5;
+      color: var(--dark);
+      background-color: var(--light);
+      padding: 15px;
+      border-radius: var(--border-radius);
+      border: 1px dashed var(--gray);
+    }
+
+    /* Calculator Form */
+    .calculator-header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--light-gray);
+      text-align: center;
+    }
+
+    .calculator-header h2 {
+      color: var(--primary-dark);
+      font-size: 2.2rem; /* Larger heading */
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .calculator-header p {
+      color: var(--gray);
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Better minimum width */
+      gap: 25px; /* More spacing */
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 0;
+    }
+
+    .input-group h3 {
+      font-size: 1.2rem; /* Larger heading */
+      color: var(--dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    .input-group label { /* Added for brick calculator labels */
+      font-size: 1rem;
+      color: var(--dark);
+      margin-bottom: 8px;
+      display: block; /* Ensures label takes full width above input */
+      font-weight: 500;
+    }
+
+    .input-group h3 i {
+      color: var(--primary);
+    }
+
+    .input-group p {
+      color: var(--gray);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    .input-group .info-text { /* Specific for brick calculator info texts */
+        font-size: 0.85rem;
+        color: var(--gray);
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+
+    /* Fixes for input-with-unit collision */
+    .input-with-unit {
+        display: flex;
+        gap: 8px; /* Space between input and select */
+        align-items: center; /* Vertically align items in the middle */
+        flex-wrap: nowrap; /* Prevent content from wrapping to a new line on desktop */
+    }
+
+    .input-with-unit input[type="number"] {
+        flex: 1 1 auto; /* Allow it to grow, shrink, and take up auto width */
+        min-width: 60px; /* Ensure input doesn't become too small */
+        width: auto; /* Override default width 100% from base input style */
+    }
+
+    .input-with-unit select {
+        flex-shrink: 0; /* Prevent it from shrinking */
+        width: auto; /* Default width based on content */
+        min-width: 80px; /* Minimum width to prevent unit text collision */
+        max-width: 100px; /* Maximum width to keep it compact */
+    }
+
+    /* Specific styles for custom mortar mix ratio inputs */
+    .input-with-unit span { /* For the ':' separator */
+        flex-shrink: 0;
+        white-space: nowrap; /* Prevent ':' from wrapping */
+        font-size: 1.1rem; /* Slightly larger for visibility */
+    }
+    .input-with-unit input[type="number"][id="cementPart"],
+    .input-with-unit input[type="number"][id="sandPart"] {
+        flex: 1 1 auto; /* Allow growth/shrinkage */
+        min-width: 40px; /* These can be smaller as they are just numbers */
+        max-width: 80px; /* A reasonable max-width */
+    }
+
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      padding: 14px 18px; /* More padding */
+      border: 1px solid var(--light-gray);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+      background-color: var(--light); /* Slightly off-white background */
+      color: var(--dark);
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2); /* Stronger focus ring */
+      background-color: var(--white);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--light-gray);
+      margin: 30px 0; /* More vertical space */
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
+
+    .checkbox-group input {
+      width: 20px; /* Larger checkbox */
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--dark);
+      font-weight: 400;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 16px 25px; /* Larger buttons */
+      width: 100%;
+      font-size: 1.1rem; /* Larger text */
+      font-weight: 600;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow); /* Buttons also have shadow */
+    }
+
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 20px; /* More spacing */
+      margin-top: 30px;
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
+
+    .btn-group .btn {
+      flex: 1;
+      min-width: 180px; /* Ensure buttons don't get too small */
+    }
+
+    .results {
+      background-color: var(--light); /* Consistent light background */
+      border-radius: var(--border-radius);
+      padding: 25px; /* More padding */
+      margin-top: 30px;
+      border-left: 5px solid var(--primary); /* Thicker border */
+      box-shadow: var(--shadow);
+    }
+
+    .results h3 {
+      color: var(--primary-dark);
+      margin-bottom: 20px; /* More space */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0; /* More padding */
+      border-bottom: 1px solid var(--light-gray);
+      font-size: 1.05rem;
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--dark);
+    }
+
+    .result-value {
+      font-weight: 600;
+      color: var(--primary-dark); /* Darker primary color */
+      text-align: right;
+    }
+
+    .warning-message {
+        color: #dc3545; /* Red color for warnings */
+        background-color: #f8d7da; /* Light red background */
+        border: 1px solid #f5c6cb;
+        border-radius: var(--border-radius);
+        padding: 15px;
+        margin-top: 15px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .warning-message i {
+        color: #dc3545;
+    }
+
+    /* Map Container */
+    .map-container {
+      height: 400px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      margin-top: 25px;
+      border: 1px solid var(--light-gray);
+      box-shadow: var(--shadow);
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Tools & Resources Sections */
+    .section-header {
+      background: var(--lighter);
+      margin-top: 50px; /* More space between sections */
+    }
+
+    .section-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Larger min-width for cards */
+      gap: 30px; /* More spacing */
+      padding: 30px 0; /* Consistent padding */
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: var(--lighter);
+      border-radius: var(--border-radius);
+      padding: 30px; /* More padding */
+      border-left: 5px solid var(--primary);
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-7px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--secondary); /* Secondary accent on hover */
+    }
+
+    .card h4 {
+      color: var(--primary-dark);
+      margin-bottom: 18px; /* More space */
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.35rem; /* Larger heading */
+      font-weight: 600;
+    }
+
+    .card p {
+      margin-bottom: 18px;
+      color: var(--gray);
+      flex-grow: 1;
+      font-size: 1rem;
+    }
+
+    .card .features {
+      list-style: none; /* Remove default list style */
+      margin-top: 15px;
+      padding-left: 0;
+    }
+
+    .card .features li {
+      margin-bottom: 8px;
+      color: var(--dark);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card .features li::before {
+        content: '\2713'; /* Checkmark icon */
+        font-family: 'Font Awesome 5 Free'; /* Using Font Awesome for icon */
+        font-weight: 900;
+        color: var(--primary);
+        margin-right: 5px;
+    }
+
+    .card .btn {
+      margin-top: 20px;
+    }
+
+    /* Company Info (About Us) */
+    .company-info {
+      padding: 30px 0;
+      background: var(--lighter);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 25px;
+      margin-top: 30px;
+      border: 1px solid var(--light-gray);
+    }
+
+    .company-info h4 {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .company-info p {
+      margin-bottom: 20px;
+      line-height: 1.7;
+      color: var(--dark);
+      font-size: 1.05rem;
+    }
+
+    .contact-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .contact-method {
+      display: flex;
+      align-items: center;
+      background: #e6f7ed; /* Lighter green background */
+      padding: 18px; /* More padding */
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      border: 1px solid #d4edda;
+      font-size: 1rem;
+      color: var(--primary-dark);
+      font-weight: 500;
+    }
+
+    .contact-method:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      background-color: #d4edda;
+    }
+
+    .contact-method i {
+      margin-right: 12px;
+      color: var(--primary);
+      font-size: 1.4rem; /* Larger icon */
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        margin-top: 50px;
+        background: var(--lighter);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 30px;
+        border: 1px solid var(--light-gray);
+    }
+
+    .faq-section h3 {
+        color: var(--primary-dark);
+        font-size: 2rem;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--light-gray);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid var(--light-gray);
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+
+    .faq-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .faq-question {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--dark);
+        padding: 10px 0;
+        transition: var(--transition);
+    }
+
+    .faq-question:hover {
+        color: var(--primary);
+    }
+
+    .faq-question i {
+        font-size: 1rem;
+        transition: transform 0.3s ease;
+        color: var(--primary);
+    }
+
+    .faq-question.active i {
+        transform: rotate(90deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        padding-left: 30px;
+        transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+        color: var(--gray);
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .faq-answer.active {
+        max-height: 300px; /* Adjust as needed */
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .faq-answer p {
+        margin-bottom: 10px;
+    }
+
+    .faq-answer ul, .faq-answer ol {
+        margin-left: 20px;
+        margin-bottom: 10px;
+    }
+
+    .faq-answer li {
+        margin-bottom: 5px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      margin-top: 50px;
+      padding: 0 20px; /* Adjust if sidebar is meant to be truly separate */
+    }
+
+    .info-box {
+      background: var(--lighter);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 25px;
+      margin-bottom: 30px;
+      border-left: 5px solid var(--secondary); /* Secondary accent */
+    }
+
+    .info-box h4 {
+      color: var(--secondary-dark);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .info-box p {
+      color: var(--dark);
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .info-box ul, .info-box ol {
+      margin-left: 20px;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .info-box li {
+      margin-bottom: 5px;
+    }
+
+    .info-box .btn {
+      margin-top: 15px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--darker);
+      color: var(--white);
+      padding: 60px 0 20px;
+      margin-top: 80px;
+      box-shadow: inset 0 8px 15px rgba(0,0,0,0.1); /* Inset shadow for depth */
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Better min-width */
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .footer-logo i {
+      color: var(--secondary);
+      font-size: 1.5em;
+    }
+
+    .footer-about p {
+      margin-bottom: 25px; /* More space */
+      color: #bbbbbb; /* Lighter gray for readability on dark background */
+      line-height: 1.7;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 18px; /* More spacing */
+    }
+
+    .social-links a {
+      color: var(--white);
+      background-color: rgba(255,255,255,0.1);
+      width: 45px; /* Larger social icons */
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: var(--transition);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .social-links a:hover {
+      background-color: var(--primary); /* Primary color on hover */
+      transform: translateY(-5px) scale(1.1); /* Lift and slight scale */
+      border-color: var(--primary);
+    }
+
+    .footer-column h4 {
+      font-size: 1.3rem; /* Larger heading */
+      margin-bottom: 25px; /* More space */
+      color: var(--secondary); /* Secondary accent */
+      position: relative;
+      padding-bottom: 8px;
+    }
+
+    .footer-column h4::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 40px;
+        height: 2px;
+        background-color: var(--primary); /* Primary line below heading */
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 15px; /* More spacing */
+    }
+
+    .footer-column ul li a {
+      color: #bbbbbb;
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    .footer-column ul li a:hover {
+      color: var(--secondary);
+      padding-left: 8px; /* Indent on hover */
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px; /* More padding */
+      border-top: 1px solid #495057; /* Slightly lighter border */
+      font-size: 0.9rem;
+      color: #999999;
+    }
+
+    .footer-bottom a {
+      color: #999999;
+      text-decoration: none;
+      margin: 0 10px;
+      transition: var(--transition);
+    }
+
+    .footer-bottom a:hover {
+      color: var(--secondary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) { /* Adjust breakpoint for larger tablets */
+        nav ul {
+            gap: 20px;
+        }
+        .main-click-bar h1, .section-header h3 {
+            font-size: 1.4rem;
+        }
+        .calculator-header h2 {
+            font-size: 1.8rem;
+        }
+        .card h4 {
+            font-size: 1.2rem;
+        }
+        .footer-column h4 {
+            font-size: 1.1rem;
+        }
+        .logo {
+            font-size: 1.6rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+
+      nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      nav ul.show {
+        display: flex;
+        position: absolute; /* Overlay menu */
+        top: 100%;
+        left: 0;
+        background-color: var(--primary-dark);
+        padding: 15px 0;
+        box-shadow: var(--shadow);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+      }
+      nav ul.show li {
+        width: 100%;
+      }
+      nav ul.show a {
+        padding: 10px 20px;
+        width: 100%;
+        display: block;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+        position: absolute;
+        top: 18px;
+        right: 20px;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .btn-group {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+      .footer-column {
+          text-align: center;
+      }
+      .footer-column h4::after {
+          left: 50%;
+          transform: translateX(-50%);
+      }
+      .footer-column ul {
+          padding: 0;
+      }
+      .footer-column ul li a {
+          justify-content: center;
+          padding-left: 0;
+      }
+      .social-links {
+          justify-content: center;
+      }
+      .language-switcher { /* Adjust for smaller screens */
+        margin-left: 0;
+        margin-top: 15px;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+        .main-click-bar h1, .section-header h3 {
+            font-size: 1.2rem;
+            gap: 8px;
+        }
+        .main-click-bar h1 i, .section-header h3 i {
+            font-size: 1em;
+        }
+        .calculator-header h2 {
+            font-size: 1.5rem;
+        }
+        .calculator-header p {
+            font-size: 0.95rem;
+        }
+        .input-group h3 {
+            font-size: 1.1rem;
+            gap: 8px;
+        }
+        .input-group h3 i {
+            font-size: 1em;
+        }
+        .btn {
+            font-size: 1rem;
+            padding: 14px 20px;
+        }
+        .results h3 {
+            font-size: 1.3rem;
+        }
+        .card h4 {
+            font-size: 1.1rem;
+        }
+        .contact-method {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        .contact-method i {
+            margin-right: 0;
+            margin-bottom: 5px;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    /* Print Styles */
+    @media print {
+      header, footer, .sidebar, .btn, .mobile-menu-btn, .section-header, .field-diagram-bar, .main-click-bar, .language-switcher {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      .calculator-content, .field-diagram-content, .section-content, .company-info, .faq-section, .hero, .features-grid {
+        max-height: none !important;
+        padding: 20px !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin-bottom: 0 !important;
+      }
+      .results, .card, .info-box, .contact-method, .feature-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        padding: 15px !important;
+        margin-bottom: 10px !important;
+      }
+      .input-group, .checkbox-group, .result-item {
+          page-break-inside: avoid;
+      }
+      .calculator-header, .results h3, .card h4, .info-box h4, .company-info h4, .faq-section h3, .faq-question, .section-title {
+        color: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-container">
+      <a href="#" class="logo">
+        <i class="fas fa-ruler-combined"></i>
+        <span>GeoMeasure Pro</span>
+      </a>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <nav>
+        <ul id="navMenu">
+          <li><a href="#home" class="active" data-i18n="navHome"><i class="fas fa-home"></i> <span data-i18n="navHomeText">Home</span></a></li>
+          <li><a href="#calculator" data-i18n="navCalculator"><i class="fas fa-calculator"></i> <span data-i18n="navCalculatorText">Calculator</span></a></li>
+          <li><a href="#brick-calculator" data-i18n="navBrickCalculator"><i class="fas fa-building"></i> <span data-i18n="navBrickCalculatorText">Brick Calculator</span></a></li>
+          <li><a href="#tools" data-i18n="navTools"><i class="fas fa-tools"></i> <span data-i18n="navToolsText">Tools</span></a></li>
+          <li><a href="#resources" data-i18n="navResources"><i class="fas fa-book"></i> <span data-i18n="navResourcesText">Resources</span></a></li>
+          <li><a href="#about" data-i18n="navAbout"><i class="fas fa-info-circle"></i> <span data-i18n="navAboutText">About</span></a></li>
+          <li><a href="#contact" data-i18n="navContact"><i class="fas fa-envelope"></i> <span data-i18n="navContactText">Contact</span></a></li>
+        </ul>
+      </nav>
+      <div class="language-switcher">
+        <button id="lang-en">English</button>
+        <button id="lang-hi">हिंदी</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <h1 data-i18n="heroTitle">Precision Land Measurement at Your Fingertips</h1>
+      <p data-i18n="heroDescription">Advanced tools for accurate land and construction area calculations, unit conversions, and professional reporting.</p>
+      <a href="#calculator" class="cta-button" data-i18n="heroCTA">Get Started Now</a>
+    </section>
+
+    <section id="features" class="container">
+      <h2 class="section-title" data-i18n="featuresSectionTitle">Our Powerful Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon"><i class="fas fa-map-marked-alt"></i></div>
+          <h3 data-i18n="feature1Title">Accurate Area Calculation</h3>
+          <p data-i18n="feature1Description">Measure any land area with high precision using our intuitive mapping tools.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon"><i class="fas fa-calculator"></i></div>
+          <h3 data-i18n="feature2Title">Unit Conversion</h3>
+          <p data-i18n="feature2Description">Easily convert between various units like acres, hectares, square feet, and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon"><i class="fas fa-file-pdf"></i></div>
+          <h3 data-i18n="feature3Title">Professional Reports</h3>
+          <p data-i18n="feature3Description">Generate detailed PDF and CSV reports of your measurements for professional use.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+          <h3 data-i18n="feature4Title">Mobile Friendly</h3>
+          <p data-i18n="feature4Description">Access and use our tools seamlessly on any device, anytime, anywhere.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <section id="calculator" class="fade-in">
+        <div class="main-click-bar" id="mainClickBar">
+          <h1 data-i18n="landCalcTitle"><i class="fas fa-calculator"></i> Land Area Calculator By Pramod Kumar</h1>
+          <i class="fas fa-chevron-down arrow"></i>
+        </div>
+
+        <div class="calculator-content" id="calculatorContent">
+          <div class="calculator-header">
+            <h2 data-i18n="landCalcHeader">Professional Land Measurement</h2>
+            <p data-i18n="landCalcDescription">Enter the measurements of opposite sides of your field. The calculator will find the average of each pair of opposite sides, convert to the traditional measurement system, and calculate the area in multiple units.</p>
+          </div>
+
+          <div class="field-diagram-bar" id="fieldDiagramBar">
+            <span data-i18n="fieldDiagramTitle"><i class="fas fa-map-marked-alt"></i> Field Diagram</span>
+            <i class="fas fa-chevron-down arrow"></i>
+          </div>
+
+          <div class="field-diagram-content" id="fieldDiagramContent">
+            <div class="field-rep">
+              u
+              ━━━━━━━━━
+              y ┃          ┃ x
+              y ┃          ┃ x
+              y ┃          ┃ x
+              ━━━━━━━━━
+              v
+            </div>
+            <p data-i18n="fieldDiagramText">Simplified field representation showing opposite sides</p>
+
+            <div class="map-container">
+              <div id="map"></div>
+            </div>
+            <p class="text-center" data-i18n="mapHint"><small>Click on the map to mark your field boundaries</small></p>
+          </div>
+
+          <form id="calculatorForm">
+            <div class="input-row">
+              <div class="input-group">
+                <h3 data-i18n="sideYTitle"><i class="fas fa-ruler"></i> Side y</h3>
+                <input type="number" id="y" step="any" placeholder="Enter length" class="input-field" data-i18n-placeholder="enterLength">
+              </div>
+
+              <div class="input-group">
+                <h3 data-i18n="sideXTitle"><i class="fas fa-ruler"></i> Side x (opposite y)</h3>
+                <input type="number" id="x" step="any" placeholder="Enter length" class="input-field" data-i18n-placeholder="enterLength">
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div class="input-group">
+                <h3 data-i18n="sideVTitle"><i class="fas fa-ruler"></i> Side v</h3>
+                <input type="number" id="v" step="any" placeholder="Enter length" class="input-field" data-i18n-placeholder="enterLength">
+              </div>
+
+              <div class="input-group">
+                <h3 data-i18n="sideUTitle"><i class="fas fa-ruler"></i> Side u (opposite v)</h3>
+                <input type="number" id="u" step="any" placeholder="Enter length" class="input-field" data-i18n-placeholder="enterLength">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="input-row">
+              <div class="input-group">
+                <h3 data-i18n="measurementUnitTitle"><i class="fas fa-ruler-combined"></i> Measurement Unit</h3>
+                <select id="unit" class="input-field">
+                  <option value="1" data-i18n="unitMeter">Meter</option>
+                  <option value="2" data-i18n="unitFeet">Feet</option>
+                  <option value="3" data-i18n="unitGattha">Gattha</option>
+                  <option value="4" data-i18n="unitYard">Yard</option>
+                  <option value="5" data-i18n="unitChain">Chain</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <h3 data-i18n="projectNameTitle"><i class="fas fa-tags"></i> Project Name</h3>
+                <input type="text" id="projectName" placeholder="Optional project name" class="input-field" data-i18n-placeholder="optionalProjectName">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="input-group">
+              <h3 data-i18n="additionalConversionsTitle"><i class="fas fa-exchange-alt"></i> Additional Conversions</h3>
+              <div class="input-row">
+                <div class="checkbox-group">
+                  <input type="checkbox" id="showAcre" checked>
+                  <label for="showAcre" data-i18n="showAcre">Show in Acres</label>
+                </div>
+                <div class="checkbox-group">
+                  <input type="checkbox" id="showHectare" checked>
+                  <label for="showHectare" data-i18n="showHectare">Show in Hectares</label>
+                </div>
+                <div class="checkbox-group">
+                  <input type="checkbox" id="showSqft">
+                  <label for="showSqft" data-i18n="showSqft">Show in Square Feet</label>
+                </div>
+                <div class="checkbox-group">
+                  <input type="checkbox" id="showSqm">
+                  <label for="showSqm" data-i18n="showSqm">Show in Square Meters</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button type="button" class="btn" onclick="calculateArea()" data-i18n="calculateAreaBtn">
+                <i class="fas fa-calculator"></i> Calculate Area
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="resetForm()" data-i18n="resetBtn">
+                <i class="fas fa-redo"></i> Reset
+              </button>
+            </div>
+
+            <div class="results" id="output">
+              <h3 data-i18n="calcResultsTitle"><i class="fas fa-chart-bar"></i> Calculation Results</h3>
+              <p data-i18n="calcResultsInitialText">Enter your field dimensions and click "Calculate Area"</p>
+            </div>
+
+            <div class="btn-group" id="exportButtons" style="display: none;">
+              <button type="button" class="btn btn-secondary" onclick="exportToPDF()" data-i18n="exportPdfBtn">
+                <i class="fas fa-file-pdf"></i> Export to PDF
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="exportToCSV()" data-i18n="exportCsvBtn">
+                <i class="fas fa-file-csv"></i> Export to CSV
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="printResults()" data-i18n="printResultsBtn">
+                <i class="fas fa-print"></i> Print Results
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Brick Calculator Section -->
+      <section id="brick-calculator" class="fade-in">
+        <div class="main-click-bar" id="brickCalculatorBar">
+          <h1 data-i18n="brickCalcTitle"><i class="fas fa-building"></i> Precision Brick & Material Calculator</h1>
+          <i class="fas fa-chevron-down arrow"></i>
+        </div>
+
+        <div class="calculator-content" id="brickCalculatorContent">
+          <div class="calculator-header">
+            <h2 data-i18n="brickCalcHeader">Advanced Brick & Material Calculator</h2>
+            <p data-i18n="brickCalcDescription">Precision calculator with millimeter precision for bricks, mortar, cement, and sand. Includes brick wastage patterns and detailed breakdowns.</p>
+          </div>
+
+          <form id="brickCalculatorForm">
+            <div class="input-section">
+              <h3 data-i18n="wallSpecsTitle"><i class="fas fa-vector-square"></i> Wall Specifications</h3>
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="wallLength" data-i18n="wallLengthLabel">Wall Length:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="wallLength" step="0.001" min="0" value="5.0" required>
+                    <select id="wallLengthUnit">
+                      <option value="m" data-i18n="unitMeters">Meters (m)</option>
+                      <option value="ft" data-i18n="unitFeet">Feet (ft)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label for="wallHeight" data-i18n="wallHeightLabel">Wall Height:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="wallHeight" step="0.001" min="0" value="3.0" required>
+                    <select id="wallHeightUnit">
+                      <option value="m" data-i18n="unitMeters">Meters (m)</option>
+                      <option value="ft" data-i18n="unitFeet">Feet (ft)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label for="wallThickness" data-i18n="wallThicknessLabel">Wall Thickness:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="wallThickness" step="0.1" min="0" value="230" required>
+                    <select id="wallThicknessUnit">
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="m" data-i18n="unitMeters">Meters (m)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                      <option value="ft" data-i18n="unitFeet">Feet (ft)</option>
+                    </select>
+                  </div>
+                  <p class="info-text" data-i18n="wallThicknessInfo">Standard thickness: 115mm (½ brick), 230mm (1 brick), 345mm (1½ brick)</p>
+                </div>
+                <div class="input-group">
+                  <label for="wallOpenings" data-i18n="wallOpeningsLabel">Total Openings Area (Doors/Windows):</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="wallOpenings" step="0.01" min="0" value="0">
+                    <select id="wallOpeningsUnit">
+                      <option value="m2" data-i18n="unitSqMeters">Square Meters (m²)</option>
+                      <option value="ft2" data-i18n="unitSqFeet">Square Feet (ft²)</option>
+                    </select>
+                  </div>
+                  <p class="info-text" data-i18n="wallOpeningsInfo">Subtract area of doors/windows for more accurate results</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-section">
+              <h3 data-i18n="brickSpecsTitle"><i class="fas fa-cube"></i> Brick Specifications</h3>
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="brickPreset" data-i18n="brickTypePresetLabel">Brick Type Preset:</label>
+                  <select id="brickPreset">
+                    <option value="custom" data-i18n="brickPresetCustom">Custom Dimensions</option>
+                    <option value="indian_standard" data-i18n="brickPresetIndian">Indian Standard (230×115×75mm)</option>
+                    <option value="uk_standard" data-i18n="brickPresetUK">UK Standard (215×102.5×65mm)</option>
+                    <option value="us_standard" data-i18n="brickPresetUS">US Standard (203×92×57mm)</option>
+                    <option value="australian_standard" data-i18n="brickPresetAustralian">Australian Standard (230×110×76mm)</option>
+                    <option value="modular_metric" data-i18n="brickPresetModular">Modular Metric (190×90×90mm)</option>
+                    <option value="jumbo_metric" data-i18n="brickPresetJumbo">Jumbo Metric (290×90×90mm)</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="brickLength" data-i18n="brickLengthLabel">Brick Length:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="brickLength" step="0.1" min="0" value="230" required>
+                    <select id="brickLengthUnit">
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="m" data-i18n="unitMeters">Meters (m)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label for="brickWidth" data-i18n="brickWidthLabel">Brick Width:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="brickWidth" step="0.1" min="0" value="115" required>
+                    <select id="brickWidthUnit">
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="m" data-i18n="unitMeters">Meters (m)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label for="brickHeight" data-i18n="brickHeightLabel">Brick Height:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="brickHeight" step="0.1" min="0" value="75" required>
+                    <select id="brickHeightUnit">
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="m" data-i18n="unitMeters">Meters (m)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label for="brickDensity" data-i18n="brickDensityLabel">Brick Density (kg/m³):</label>
+                  <input type="number" id="brickDensity" step="1" min="0" value="1920">
+                  <p class="info-text" data-i18n="brickDensityInfo">Standard clay brick: ~1920 kg/m³, Concrete: ~2000-2400 kg/m³</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-section">
+              <h3 data-i18n="mortarSpecsTitle"><i class="fas fa-mortar-pestle"></i> Mortar Specifications</h3>
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="mortarThickness" data-i18n="mortarThicknessLabel">Mortar Joint Thickness:</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="mortarThickness" step="0.1" min="0" value="10" required>
+                    <select id="mortarThicknessUnit">
+                      <option value="mm" data-i18n="unitMillimeters">Millimeters (mm)</option>
+                      <option value="cm" data-i18n="unitCentimeters">Centimeters (cm)</option>
+                      <option value="in" data-i18n="unitInches">Inches (in)</option>
+                    </select>
+                  </div>
+                  <p class="info-text" data-i18n="mortarThicknessInfo">Standard: 10mm (3/8") for horizontal, 10-12mm for vertical joints</p>
+                </div>
+                <div class="input-group">
+                  <label data-i18n="mortarMixRatioLabel">Mortar Mix Ratio (Cement : Sand):</label>
+                  <div class="input-with-unit">
+                    <input type="number" id="cementPart" step="0.1" min="0.1" value="1" required>
+                    <span style="align-self: center; font-weight: 600; color: var(--dark);" data-i18n="colonSeparator">:</span>
+                    <input type="number" id="sandPart" step="0.1" min="0.1" value="6" required>
+                  </div>
+                  <p class="info-text" data-i18n="mortarMixRatioInfo">Common ratios: 1:3 (strong), 1:4 (general), 1:6 (foundations)</p>
+                </div>
+                <div class="input-group">
+                  <label for="mortarType" data-i18n="mortarTypeLabel">Mortar Type:</label>
+                  <select id="mortarType">
+                    <option value="cement" data-i18n="mortarTypeCement">Cement Mortar</option>
+                    <option value="lime" data-i18n="mortarTypeLime">Lime Mortar</option>
+                    <option value="composite" data-i18n="mortarTypeComposite">Composite Mortar</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="mortarAdditives" data-i18n="mortarAdditivesLabel">Additives (% by weight):</label>
+                  <input type="number" id="mortarAdditives" step="0.1" min="0" max="5" value="0">
+                  <p class="info-text" data-i18n="mortarAdditivesInfo">Plasticizers, waterproofing (typically 0.5-2%)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-section">
+              <h3 data-i18n="constructionFactorsTitle"><i class="fas fa-tools"></i> Construction Factors</h3>
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="bondPattern" data-i18n="bondPatternLabel">Bond Pattern:</label>
+                  <select id="bondPattern">
+                    <option value="stretcher" data-i18n="bondStretcher">Stretcher Bond</option>
+                    <option value="english" data-i18n="bondEnglish">English Bond</option>
+                    <option value="flemish" data-i18n="bondFlemish">Flemish Bond</option>
+                    <option value="header" data-i18n="bondHeader">Header Bond</option>
+                    <option value="stack" data-i18n="bondStack">Stack Bond</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="wasteFactor" data-i18n="wasteFactorLabel">Wastage Factor (%):</label>
+                  <input type="number" id="wasteFactor" step="0.1" min="0" max="20" value="5">
+                  <p class="info-text" data-i18n="wasteFactorInfo">Typical: 5-10% (higher for complex patterns)</p>
+                </div>
+                <div class="input-group">
+                  <label for="workmanshipFactor" data-i18n="workmanshipFactorLabel">Workmanship Factor (%):</label>
+                  <input type="number" id="workmanshipFactor" step="0.1" min="0" max="10" value="2">
+                  <p class="info-text" data-i18n="workmanshipFactorInfo">Additional for workmanship variations (1-3%)</p>
+                </div>
+                <div class="input-group">
+                  <label for="bulkingFactor" data-i18n="bulkingFactorLabel">Sand Bulking Factor (%):</label>
+                  <input type="number" id="bulkingFactor" step="0.1" min="0" max="30" value="20">
+                  <p class="info-text" data-i18n="bulkingFactorInfo">Volume increase when sand is moist (15-30%)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button type="button" class="btn" onclick="calculateBricks()" data-i18n="calculatePrecisionBtn">
+                <i class="fas fa-calculator"></i> Calculate with Precision
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="resetBrickForm()" data-i18n="resetAllBtn">
+                <i class="fas fa-redo"></i> Reset All
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="showAdvancedOptions()" data-i18n="advancedBtn">
+                <i class="fas fa-sliders-h"></i> Advanced
+              </button>
+            </div>
+
+            <div class="results" id="brickOutput">
+              <h3 data-i18n="precisionCalcResultsTitle"><i class="fas fa-chart-bar"></i> Precision Calculation Results</h3>
+              <p data-i18n="precisionCalcResultsInitialText">Enter specifications to get detailed material estimates with precision breakdown.</p>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="area-unit-converter" class="fade-in">
+        <div class="main-click-bar" style="margin-top: 40px;">
+          <h1 data-i18n="areaUnitConverterTitle"><i class="fas fa-exchange-alt"></i> Area Unit Converter</h1>
+          <i class="fas fa-chevron-down arrow"></i>
+        </div>
+        <div class="calculator-content active" style="padding: 30px; max-height: 5000px;">
+          <div class="calculator-header">
+            <h2 data-i18n="convertAreaHeader">Convert Between Area Units</h2>
+            <p data-i18n="convertAreaDescription">Enter a value and select units to convert between different area measurement systems.</p>
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <h3 data-i18n="inputValueTitle"><i class="fas fa-ruler-combined"></i> Input Value</h3>
+              <input type="number" id="converterInputValue" step="any" placeholder="Enter value" class="input-field" data-i18n-placeholder="enterValue">
+            </div>
+
+            <div class="input-group">
+              <h3 data-i18n="fromUnitTitle"><i class="fas fa-exchange-alt"></i> From Unit</h3>
+              <select id="converterFromUnit" class="input-field">
+                <option value="square_meters" data-i18n="unitSqMeters">Square Meters (m²)</option>
+                <option value="square_feet" data-i18n="unitSqFeet">Square Feet (ft²)</option>
+                <option value="acres" data-i18n="unitAcres">Acres</option>
+                <option value="hectares" data-i18n="unitHectares">Hectares</option>
+                <option value="square_yards" data-i18n="unitSqYards">Square Yards (yd²)</option>
+                <option value="square_kilometers" data-i18n="unitSqKm">Square Kilometers (km²)</option>
+                <option value="square_miles" data-i18n="unitSqMiles">Square Miles (mi²)</option>
+                <option value="biswansi" data-i18n="unitBiswansi">Biswansi</option>
+                <option value="bisva" data-i18n="unitBisva">Bisva</option>
+                <option value="beegha" data-i18n="unitBeegha">Beegha</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <h3 data-i18n="toUnitTitle"><i class="fas fa-arrow-right"></i> To Unit</h3>
+              <select id="converterToUnit" class="input-field">
+                <option value="square_meters" data-i18n="unitSqMeters">Square Meters (m²)</option>
+                <option value="square_feet" data-i18n="unitSqFeet">Square Feet (ft²)</option>
+                <option value="acres" data-i18n="unitAcres">Acres</option>
+                <option value="hectares" data-i18n="unitHectares">Hectares</option>
+                <option value="square_yards" data-i18n="unitSqYards">Square Yards (yd²)</option>
+                <option value="square_kilometers" data-i18n="unitSqKm">Square Kilometers (km²)</option>
+                <option value="square_miles" data-i18n="unitSqMiles">Square Miles (mi²)</option>
+                <option value="biswansi" data-i18n="unitBiswansi">Biswansi</option>
+                <option value="bisva" data-i18n="unitBisva">Bisva</option>
+                <option value="beegha" data-i18n="unitBeegha">Beegha</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn" onclick="convertArea()" data-i18n="convertBtn">
+              <i class="fas fa-calculator"></i> Convert
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="resetConverterForm()" data-i18n="resetBtn">
+              <i class="fas fa-redo"></i> Reset
+            </button>
+          </div>
+
+          <div class="results" id="converterOutput">
+            <h3 data-i18n="conversionResultsTitle"><i class="fas fa-chart-bar"></i> Conversion Results</h3>
+            <p data-i18n="converterInitialText">Enter a value and select units to convert.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="tools" class="expanded-section fade-in">
+        <div class="section-header" onclick="toggleSection('toolsContent', 'toolsArrow')">
+          <h3 data-i18n="toolsSectionTitle"><i class="fas fa-tools"></i> Professional Measurement Tools</h3>
+          <i class="fas fa-chevron-down arrow" id="toolsArrow"></i>
+        </div>
+        <div class="section-content" id="toolsContent">
+          <div class="card">
+            <h4 data-i18n="toolAdvancedCalcTitle"><i class="fas fa-calculator"></i> Advanced Area Calculator</h4>
+            <p data-i18n="toolAdvancedCalcDesc">Precision area calculations for any shape with support for multiple geometric formulas and unit systems.</p>
+            <ul class="features">
+              <li data-i18n="toolAdvancedCalcFeature1">Support for 10+ geometric shapes</li>
+              <li data-i18n="toolAdvancedCalcFeature2">Custom coordinate input</li>
+              <li data-i18n="toolAdvancedCalcFeature3">Save and load calculations</li>
+              <li data-i18n="toolAdvancedCalcFeature4">Project management</li>
+            </ul>
+            <button class="btn" onclick="scrollToCalculator()" data-i18n="launchCalculatorBtn">
+              <i class="fas fa-arrow-right"></i> Launch Calculator
+            </button>
+          </div>
+
+          <div class="card">
+            <h4 data-i18n="toolGisMapConverterTitle"><i class="fas fa-map-marked-alt"></i> GIS Map Converter</h4>
+            <p data-i18n="toolGisMapConverterDesc">Professional-grade GIS tools for coordinate conversion and map format transformation.</p>
+            <ul class="features">
+              <li data-i18n="toolGisMapConverterFeature1">Convert between 20+ coordinate systems</li>
+              <li data-i18n="toolGisMapConverterFeature2">Support for GeoJSON, KML, Shapefile</li>
+              <li data-i18n="toolGisMapConverterFeature3">Batch processing of multiple files</li>
+              <li data-i18n="toolGisMapConverterFeature4">Metadata preservation</li>
+            </ul>
+            <button class="btn" onclick="showComingSoon()" data-i18n="launchMapToolsBtn">
+              <i class="fas fa-arrow-right"></i> Launch Map Tools
+            </button>
+          </div>
+
+          <div class="card">
+            <h4 data-i18n="toolProfessionalUnitConverterTitle"><i class="fas fa-exchange-alt"></i> Professional Unit Converter</h4>
+            <p data-i18n="toolProfessionalUnitConverterDesc">Comprehensive unit conversion system with 100+ measurement units across 15 categories.</p>
+            <ul class="features">
+              <li data-i18n="toolProfessionalUnitConverterFeature1">Real-time currency conversion</li>
+              <li data-i18n="toolProfessionalUnitConverterFeature2">Custom unit creation</li>
+              <li data-i18n="toolProfessionalUnitConverterFeature3">Calculation history</li>
+              <li data-i18n="toolProfessionalUnitConverterFeature4">Mobile-friendly interface</li>
+            </ul>
+            <button class="btn" onclick="showComingSoon()" data-i18n="launchConverterBtn">
+              <i class="fas fa-arrow-right"></i> Launch Converter
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources" class="expanded-section fade-in">
+        <div class="section-header" onclick="toggleSection('resourcesContent', 'resourcesArrow')">
+          <h3 data-i18n="resourcesSectionTitle"><i class="fas fa-book-open"></i> Professional Resources</h3>
+          <i class="fas fa-chevron-down arrow" id="resourcesArrow"></i>
+        </div>
+        <div class="section-content" id="resourcesContent">
+          <div class="card">
+            <h4 data-i18n="resourceMeasurementGuideTitle"><i class="fas fa-ruler-combined"></i> Measurement Guide</h4>
+            <p data-i18n="resourceMeasurementGuideDesc">Comprehensive guide to professional land measurement techniques and best practices.</p>
+            <ul class="features">
+              <li data-i18n="resourceMeasurementGuideFeature1">Step-by-step measurement instructions</li>
+              <li data-i18n="resourceMeasurementGuideFeature2">Tips for irregular plots</li>
+              <li data-i18n="resourceMeasurementGuideFeature3">Common pitfalls to avoid</li>
+              <li data-i18n="resourceMeasurementGuideFeature4">Visual diagrams and examples</li>
+            </ul>
+            <button class="btn" onclick="showComingSoon()" data-i18n="downloadGuideBtn">
+              <i class="fas fa-download"></i> Download Guide
+            </button>
+          </div>
+
+          <div class="card">
+            <h4 data-i18n="resourceProfessionalFaqTitle"><i class="fas fa-question-circle"></i> Professional FAQ</h4>
+            <p data-i18n="resourceProfessionalFaqDesc">Answers to technical questions about land measurement, surveying, and unit conversions.</p>
+            <ul class="features">
+              <li data-i18n="resourceProfessionalFaqFeature1">200+ professionally answered questions</li>
+              <li data-i18n="resourceProfessionalFaqFeature2">Searchable knowledge base</li>
+              <li data-i18n="resourceProfessionalFaqFeature3">Regularly updated content</li>
+              <li data-i18n="resourceProfessionalFaqFeature4">Expert contributor network</li>
+            </ul>
+            <button class="btn" onclick="scrollToFAQ()" data-i18n="browseFaqBtn">
+              <i class="fas fa-search"></i> Browse FAQ
+            </button>
+          </div>
+
+          <div class="card">
+            <h4 data-i18n="resourceTechnicalDocsTitle"><i class="fas fa-file-alt"></i> Technical Documentation</h4>
+            <p data-i18n="resourceTechnicalDocsDesc">Complete technical documentation for surveyors, engineers, and developers.</p>
+            <ul class="features">
+              <li data-i18n="resourceTechnicalDocsFeature1">API references</li>
+              <li data-i18n="resourceTechnicalDocsFeature2">Integration guides</li>
+              <li data-i18n="resourceTechnicalDocsFeature3">Troubleshooting manuals</li>
+              <li data-i18n="resourceTechnicalDocsFeature4">Code examples</li>
+            </ul>
+            <button class="btn" onclick="showComingSoon()" data-i18n="viewDocsBtn">
+              <i class="fas fa-book"></i> View Documentation
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="faq-section fade-in">
+        <h3 data-i18n="faqSectionTitle"><i class="fas fa-question-circle"></i> Professional FAQ</h3>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <i class="fas fa-chevron-right"></i>
+            <span data-i18n="faqQ1">What professional measurement standards does this calculator support?</span>
+          </div>
+          <div class="faq-answer">
+            <p data-i18n="faqA1P1">Our calculator adheres to international surveying standards including:</p>
+            <ul>
+              <li data-i18n="faqA1L1">ISO 19125 (Geographic information)</li>
+              <li data-i18n="faqA1L2">FGDC Cadastral Data Content Standard</li>
+              <li data-i18n="faqA1L3">Indian Survey Standards (Survey of India)</li>
+              <li data-i18n="faqA1L4">Nepal Survey Department standards</li>
+            </ul>
+            <p data-i18n="faqA1P2">We support both traditional local units and international metric standards.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <i class="fas fa-chevron-right"></i>
+            <span data-i18n="faqQ2">How accurate are the calculations for professional surveying work?</span>
+          </div>
+          <div class="faq-answer">
+            <p data-i18n="faqA2P1">Our calculator provides professional-grade accuracy suitable for:</p>
+            <ul>
+              <li data-i18n="faqA2L1">Precision to 6 decimal places for all calculations</li>
+              <li data-i18n="faqA2L2">Support for geodetic coordinate transformations</li>
+              <li data-i18n="faqA2L3">Ellipsoidal earth model corrections</li>
+              <li data-i18n="faqA2L4">Customizable rounding for legal descriptions</li>
+            </ul>
+            <p data-i18n="faqA2P2">For high-precision cadastral surveys, we recommend using our professional desktop software with GNSS integration.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <i class="fas fa-chevron-right"></i>
+            <span data-i18n="faqQ3">Can I import data from professional surveying equipment?</span>
+          </div>
+          <div class="faq-answer">
+            <p data-i18n="faqA3P1">Yes, our professional version supports direct import from:</p>
+            <ul>
+              <li data-i18n="faqA3L1">Total stations (Leica, Trimble, Topcon formats)</li>
+              <li data-i18n="faqA3L2">GNSS/GPS survey equipment</li>
+              <li data-i18n="faqA3L3">CAD files (DWG, DXF)</li>
+              <li data-i18n="faqA3L4">GIS formats (Shapefile, GeoJSON, KML)</li>
+            </ul>
+            <p data-i18n="faqA3P2">Data can be exported to industry-standard formats for use in CAD and GIS applications.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <i class="fas fa-chevron-right"></i>
+            <span data-i18n="faqQ4">How do I calculate area for irregular shaped properties?</span>
+          </div>
+          <div class="faq-answer">
+            <p data-i18n="faqA4P1">For professional measurement of irregular parcels:</p>
+            <ol>
+              <li data-i18n="faqA4L1">Use our coordinate-based area calculator</li>
+              <li data-i18n="faqA4L2">Input boundary points from your survey</li>
+              <li data-i18n="faqA4L3">Apply the DMD (Double Meridian Distance) method</li>
+              <li data-i18n="faqA4L4">Use the Simpson's Rule for curved boundaries</li>
+              <li data-i18n="faqA4L5">Account for slope corrections if needed</li>
+            </ol>
+            <p data-i18n="faqA4P2">Our software automatically applies professional algorithms for maximum accuracy.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <i class="fas fa-chevron-right"></i>
+            <span data-i18n="faqQ5">What professional reports can I generate?</span>
+          </div>
+          <div class="faq-answer">
+            <p data-i18n="faqA5P1">Our professional version generates survey-grade reports including:</p>
+            <ul>
+              <li data-i18n="faqA5L1">Legal area certificates</li>
+              <li data-i18n="faqA5L2">Survey plats and sketches</li>
+              <li data-i18n="faqA5L3">Boundary descriptions</li>
+              <li data-i18n="faqA5L4">Calculated area summaries</li>
+              <li data-i18n="faqA5L5">Coordinate lists</li>
+              <li data-i18n="faqA5L6">Custom-branded reports</li>
+            </ul>
+            <p data-i18n="faqA5P2">All reports comply with local land record requirements.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="expanded-section fade-in">
+        <div class="section-header" onclick="toggleSection('companyContent', 'companyArrow')">
+          <h3 data-i18n="aboutSectionTitle"><i class="fas fa-building"></i> Professional Services</h3>
+          <i class="fas fa-chevron-down arrow" id="companyArrow"></i>
+        </div>
+        <div class="company-info" id="companyContent">
+          <h4 data-i18n="aboutServicesTitle"><i class="fas fa-info-circle"></i> About Our Professional Services</h4>
+          <p data-i18n="aboutServicesP1">GeoMeasure Pro was founded in 2015 by Pramod Kumar, a licensed surveyor with over 20 years of experience in cadastral surveying and land measurement. Our tools are trusted by over 50,000 professionals across India, Nepal, and internationally.</p>
+
+          <p data-i18n="aboutServicesP2">We specialize in developing professional-grade measurement tools that combine traditional knowledge with modern technology. Our team includes surveyors, software engineers, and GIS specialists dedicated to creating accurate, reliable tools for land professionals.</p>
+
+          <h4 data-i18n="aboutCertificationsTitle"><i class="fas fa-certificate"></i> Professional Certifications</h4>
+          <ul>
+            <li data-i18n="aboutCertificationsL1">Licensed Surveying Software Provider (India)</li>
+            <li data-i18n="aboutCertificationsL2">ISO 9001:2015 Certified Development Process</li>
+            <li data-i18n="aboutCertificationsL3">Member of International Federation of Surveyors (FIG)</li>
+            <li data-i18n="aboutCertificationsL4">Recognized by Survey of India for educational use</li>
+          </ul>
+
+          <h4 data-i18n="aboutContactTitle"><i class="fas fa-envelope"></i> Professional Contact</h4>
+          <p data-i18n="aboutContactP1">For professional support, enterprise licensing, or custom solutions:</p>
+          <div class="contact-methods">
+            <div class="contact-method">
+              <i class="fas fa-envelope"></i>
+              <span data-i18n="contactEmail">pro@geomeasure.com</span>
+            </div>
+            <div class="contact-method">
+              <i class="fas fa-phone"></i>
+              <span data-i18n="contactPhone">+91 11 2345 6789</span>
+            </div>
+            <div class="contact-method">
+              <i class="fas fa-map-marker-alt"></i>
+              <span data-i18n="contactAddress">Survey House, New Delhi, India</span>
+            </div>
+            <div class="contact-method">
+              <i class="fas fa-clock"></i>
+              <span data-i18n="contactHours">Mon-Fri: 9AM-6PM IST</span>
+            </div>
+          </div>
+
+          <h4 data-i18n="aboutPrivacySecurityTitle"><i class="fas fa-shield-alt"></i> Professional Privacy & Security</h4>
+          <p data-i18n="aboutPrivacySecurityP1">We adhere to the highest standards of data security for professional users:</p>
+          <ul>
+            <li data-i18n="aboutPrivacySecurityL1">End-to-end encryption for all data transfers</li>
+            <li data-i18n="aboutPrivacySecurityL2">On-premise deployment options</li>
+            <li data-i18n="aboutPrivacySecurityL3">GDPR compliant data handling</li>
+            <li data-i18n="aboutPrivacySecurityL4">Regular security audits</li>
+          </ul>
+        </div>
+      </section>
+
+      <aside class="sidebar fade-in">
+        <h3 data-i18n="sidebarTipsTitle"><i class="fas fa-info-circle"></i> Professional Tips</h3>
+
+        <div class="info-box">
+          <h4 data-i18n="sidebarMeasurementBestPracticesTitle"><i class="fas fa-ruler-combined"></i> Measurement Best Practices</h4>
+          <p data-i18n="sidebarMeasurementBestPracticesP1"><strong>For professional accuracy:</strong></p>
+          <ol>
+            <li data-i18n="sidebarMeasurementBestPracticesL1">Always measure from permanent monuments</li>
+            <li data-i18n="sidebarMeasurementBestPracticesL2">Take multiple measurements of each line</li>
+            <li data-i18n="sidebarMeasurementBestPracticesL3">Account for slope when measuring hilly terrain</li>
+            <li data-i18n="sidebarMeasurementBestPracticesL4">Document your measurement methods</li>
+            <li data-i18n="sidebarMeasurementBestPracticesL5">Verify with independent calculations</li>
+          </ol>
+        </div>
+
+        <div class="info-box">
+          <h4 data-i18n="sidebarUnitConversionFactorsTitle"><i class="fas fa-lightbulb"></i> Unit Conversion Factors</h4>
+          <p data-i18n="sidebarUnitConversionFactorsP1"><strong>Professional reference:</strong></p>
+          <ul>
+            <li data-i18n="sidebarUnitConversionFactorsL1">1 Beegha = 20 Bisva = 400 Biswansi</li>
+            <li data-i18n="sidebarUnitConversionFactorsL2">1 Acre = 1.6 Beegha (varies by region)</li>
+            <li data-i18n="sidebarUnitConversionFactorsL3">1 Hectare = 2.471 Acres</li>
+            <li data-i18n="sidebarUnitConversionFactorsL4">1 Gattha = 33 sq ft (UP) or 36 sq ft (Bihar)</li>
+          </ul>
+          <p data-i18n="sidebarUnitConversionFactorsP2">Always verify local conversion standards.</p>
+        </div>
+
+        <div class="info-box">
+          <h4 data-i18n="sidebarUpcomingTrainingTitle"><i class="fas fa-calendar-alt"></i> Upcoming Professional Training</h4>
+          <p data-i18n="sidebarUpcomingTrainingP1"><strong>Land Measurement Certification:</strong></p>
+          <p data-i18n="sidebarUpcomingTrainingP2">Next session: June 15-17, 2024</p>
+          <p data-i18n="sidebarUpcomingTrainingP3">Topics: Advanced area calculation, Survey techniques, Legal aspects</p>
+          <button class="btn btn-secondary" style="margin-top: 10px;" onclick="showComingSoon()" data-i18n="learnMoreBtn">
+            <i class="fas fa-info-circle"></i> Learn More
+          </button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-about">
+          <a href="#" class="footer-logo">
+            <i class="fas fa-ruler-combined"></i>
+            <span>GeoMeasure Pro</span>
+          </a>
+          <p data-i18n="footerAboutDescription">Professional land measurement tools for surveyors, engineers, and property professionals. Accurate, reliable, and trusted since 2015.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footerQuickLinksTitle">Professional Tools</h4>
+          <ul>
+            <li><a href="#calculator"><i class="fas fa-calculator"></i> <span data-i18n="footerAdvancedCalc">Advanced Calculator</span></a></li>
+            <li><a href="#brick-calculator"><i class="fas fa-building"></i> <span data-i18n="footerBrickCalc">Brick Calculator</span></a></li>
+            <li><a href="#area-unit-converter"><i class="fas fa-exchange-alt"></i> <span data-i18n="footerUnitConverter">Unit Converter Pro</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-chart-area"></i> <span data-i18n="footerVolumeCalc">Volume Calculator</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-drafting-compass"></i> <span data-i18n="footerSurveyTools">Survey Tools</span></a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footerResourcesTitle">Resources</h4>
+          <ul>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-book"></i> <span data-i18n="footerMeasurementStandards">Measurement Standards</span></a></li>
+            <li><a href="#faq"><i class="fas fa-question-circle"></i> <span data-i18n="footerProfessionalFaq">Professional FAQ</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-file-alt"></i> <span data-i18n="footerTechnicalDocs">Technical Docs</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-video"></i> <span data-i18n="footerTrainingVideos">Training Videos</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-blog"></i> <span data-i18n="footerSurveyorBlog">Surveyor's Blog</span></a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footerCompanyTitle">Company</h4>
+          <ul>
+            <li><a href="#about" data-i18n="footerAboutUsLink"><i class="fas fa-info-circle"></i> <span data-i18n="navAboutText">About Us</span></a></li>
+            <li><a href="#contact" data-i18n="footerContactProTeamLink"><i class="fas fa-envelope"></i> <span data-i18n="footerContactProTeam">Contact Pro Team</span></a></li>
+            <li><a href="#" onclick="showComingSoon()" data-i18n="navPrivacyPolicyLink"><i class="fas fa-shield-alt"></i> <span data-i18n="navPrivacyPolicyText">Privacy Policy</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-file-contract"></i> <span data-i18n="footerTermsOfService">Terms of Service</span></a></li>
+            <li><a href="#" onclick="showComingSoon()"><i class="fas fa-briefcase"></i> <span data-i18n="footerCareers">Careers</span></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p data-i18n="copyrightText">&copy; 2024 GeoMeasure Pro. All rights reserved.</p>
+        | <a href="#" onclick="showComingSoon()" data-i18n="footerTerms">Terms</a> | <a href="#" onclick="showComingSoon()" data-i18n="footerPrivacy">Privacy</a> | <a href="#" onclick="showComingSoon()" data-i18n="footerSitemap">Sitemap</a> | <a href="#" onclick="showComingSoon()" data-i18n="footerApi">API</a> | <a href="#" onclick="showComingSoon()" data-i18n="footerSupport">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS for map functionality -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <!-- jsPDF for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // --- Internationalization (i18n) Logic ---
+    const translations = {
+      en: {
+        pageTitle: "GeoMeasure Pro - Professional Land & Construction Measurement Tools",
+        metaDescription: "Advanced land measurement and construction calculator with multiple unit conversions, mapping tools, and professional reporting",
+        navHome: "Home",
+        navCalculator: "Calculator",
+        navBrickCalculator: "Brick Calculator",
+        navTools: "Tools",
+        navResources: "Resources",
+        navAbout: "About Us",
+        navContact: "Contact",
+        navHomeText: "Home", // Added for clarity with icon
+        navCalculatorText: "Calculator", // Added for clarity with icon
+        navBrickCalculatorText: "Brick Calculator", // Added for clarity with icon
+        navToolsText: "Tools", // Added for clarity with icon
+        navResourcesText: "Resources", // Added for clarity with icon
+        navAboutText: "About", // Added for clarity with icon
+        navContactText: "Contact", // Added for clarity with icon
+        navPrivacyPolicyText: "Privacy Policy",
+        heroTitle: "Precision Land Measurement at Your Fingertips",
+        heroDescription: "Advanced tools for accurate land and construction area calculations, unit conversions, and professional reporting.",
+        heroCTA: "Get Started Now",
+        featuresSectionTitle: "Our Powerful Features",
+        feature1Title: "Accurate Area Calculation",
+        feature1Description: "Measure any land area with high precision using our intuitive mapping tools.",
+        feature2Title: "Unit Conversion",
+        feature2Description: "Easily convert between various units like acres, hectares, square feet, and more.",
+        feature3Title: "Professional Reports",
+        feature3Description: "Generate detailed PDF and CSV reports of your measurements for professional use.",
+        feature4Title: "Mobile Friendly",
+        feature4Description: "Access and use our tools seamlessly on any device, anytime, anywhere.",
+        
+        // Land Area Calculator
+        landCalcTitle: "Land Area Calculator By Pramod Kumar",
+        landCalcHeader: "Professional Land Measurement",
+        landCalcDescription: "Enter the measurements of opposite sides of your field. The calculator will find the average of each pair of opposite sides, convert to the traditional measurement system, and calculate the area in multiple units.",
+        fieldDiagramTitle: "Field Diagram",
+        fieldDiagramText: "Simplified field representation showing opposite sides",
+        mapHint: "Click on the map to mark your field boundaries",
+        sideYTitle: "Side y",
+        sideXTitle: "Side x (opposite y)",
+        sideVTitle: "Side v",
+        sideUTitle: "Side u (opposite v)",
+        enterLength: "Enter length", // Placeholder
+        measurementUnitTitle: "Measurement Unit",
+        unitMeter: "Meter",
+        unitFeet: "Feet",
+        unitGattha: "Gattha",
+        unitYard: "Yard",
+        unitChain: "Chain",
+        projectNameTitle: "Project Name",
+        optionalProjectName: "Optional project name", // Placeholder
+        additionalConversionsTitle: "Additional Conversions",
+        showAcre: "Show in Acres",
+        showHectare: "Show in Hectares",
+        showSqft: "Show in Square Feet",
+        showSqm: "Show in Square Meters",
+        calculateAreaBtn: "Calculate Area",
+        resetBtn: "Reset",
+        calcResultsTitle: "Calculation Results",
+        calcResultsInitialText: "Enter your field dimensions and click \"Calculate Area\"",
+        exportPdfBtn: "Export to PDF",
+        exportCsvBtn: "Export to CSV",
+        printResultsBtn: "Print Results",
+        calcError: "Error",
+        calcErrorInput: "Please enter all four side measurements correctly and ensure they are positive numbers.",
+        calcErrorInvalidUnit: "Invalid unit selected for land area calculation.",
+        calcResultsTraditionalUnits: "Traditional Units:",
+        calcResultsAcres: "Acres:",
+        calcResultsHectares: "Hectares:",
+        calcResultsSqFeet: "Square Feet:",
+        calcResultsSqMeters: "Square Meters:",
+        calcMethod: "Calculation Method:",
+        calcMethodValue: "Average of opposite sides (Trapezoidal Approximation)",
+        calculatedOn: "Calculated On:",
+
+        // Brick Calculator
+        brickCalcTitle: "Precision Brick & Material Calculator",
+        brickCalcHeader: "Advanced Brick & Material Calculator",
+        brickCalcDescription: "Precision calculator with millimeter precision for bricks, mortar, cement, and sand. Includes brick wastage patterns and detailed breakdowns.",
+        wallSpecsTitle: "Wall Specifications",
+        wallLengthLabel: "Wall Length:",
+        wallHeightLabel: "Wall Height:",
+        wallThicknessLabel: "Wall Thickness:",
+        wallThicknessInfo: "Standard thickness: 115mm (½ brick), 230mm (1 brick), 345mm (1½ brick)",
+        wallOpeningsLabel: "Total Openings Area (Doors/Windows):",
+        wallOpeningsInfo: "Subtract area of doors/windows for more accurate results",
+        unitMeters: "Meters (m)",
+        unitFeet: "Feet (ft)",
+        unitInches: "Inches (in)",
+        unitCentimeters: "Centimeters (cm)",
+        unitMillimeters: "Millimeters (mm)",
+        unitSqMeters: "Square Meters (m²)",
+        unitSqFeet: "Square Feet (ft²)",
+        brickSpecsTitle: "Brick Specifications",
+        brickTypePresetLabel: "Brick Type Preset:",
+        brickPresetCustom: "Custom Dimensions",
+        brickPresetIndian: "Indian Standard (230×115×75mm)",
+        brickPresetUK: "UK Standard (215×102.5×65mm)",
+        brickPresetUS: "US Standard (203×92×57mm)",
+        brickPresetAustralian: "Australian Standard (230×110×76mm)",
+        brickPresetModular: "Modular Metric (190×90×90mm)",
+        brickPresetJumbo: "Jumbo Metric (290×90×90mm)",
+        brickLengthLabel: "Brick Length:",
+        brickWidthLabel: "Brick Width:",
+        brickHeightLabel: "Brick Height:",
+        brickDensityLabel: "Brick Density (kg/m³):",
+        brickDensityInfo: "Standard clay brick: ~1920 kg/m³, Concrete: ~2000-2400 kg/m³",
+        mortarSpecsTitle: "Mortar Specifications",
+        mortarThicknessLabel: "Mortar Joint Thickness:",
+        mortarThicknessInfo: "Standard: 10mm (3/8\") for horizontal, 10-12mm for vertical joints",
+        mortarMixRatioLabel: "Mortar Mix Ratio (Cement : Sand):",
+        colonSeparator: ":",
+        mortarMixRatioInfo: "Common ratios: 1:3 (strong), 1:4 (general), 1:6 (foundations)",
+        mortarTypeLabel: "Mortar Type:",
+        mortarTypeCement: "Cement Mortar",
+        mortarTypeLime: "Lime Mortar",
+        mortarTypeComposite: "Composite Mortar",
+        mortarAdditivesLabel: "Additives (% by weight):",
+        mortarAdditivesInfo: "Plasticizers, waterproofing (typically 0.5-2%)",
+        constructionFactorsTitle: "Construction Factors",
+        bondPatternLabel: "Bond Pattern:",
+        bondStretcher: "Stretcher Bond",
+        bondEnglish: "English Bond",
+        bondFlemish: "Flemish Bond",
+        bondHeader: "Header Bond",
+        bondStack: "Stack Bond",
+        wasteFactorLabel: "Wastage Factor (%):",
+        wasteFactorInfo: "Typical: 5-10% (higher for complex patterns)",
+        workmanshipFactorLabel: "Workmanship Factor (%):",
+        workmanshipFactorInfo: "Additional for workmanship variations (1-3%)",
+        bulkingFactorLabel: "Sand Bulking Factor (%):",
+        bulkingFactorInfo: "Volume increase when sand is moist (15-30%)",
+        calculatePrecisionBtn: "Calculate with Precision",
+        resetAllBtn: "Reset All",
+        advancedBtn: "Advanced",
+        precisionCalcResultsTitle: "Precision Calculation Results",
+        precisionCalcResultsInitialText: "Enter specifications to get detailed material estimates with precision breakdown.",
+        brickCalcError: "Calculation Error",
+        brickCalcErrorInput: "Invalid input for \"", // Part of error message
+        brickCalcErrorPositive: "Please enter a valid number.", // Part of error message
+        brickCalcErrorWallDims: "Wall dimensions (Length, Height, Thickness) must be positive values.",
+        brickCalcErrorBrickDims: "Brick dimensions (Length, Width, Height) must be positive values.",
+        brickCalcErrorMortarNeg: "Mortar joint thickness cannot be negative.",
+        brickCalcErrorMortarRatio: "Mortar mix ratio (Cement:Sand) must have positive values.",
+        brickCalcErrorBrickDensity: "Brick density must be a positive value.",
+        brickCalcErrorOpeningsNeg: "Openings area cannot be negative.",
+        brickCalcErrorNetWallArea: "Net wall area is zero or negative after accounting for openings. Please check dimensions or opening area.",
+        brickResultsNetWallArea: "Net Wall Area:",
+        brickResultsTheoreticalBricks: "Theoretical Brick Units:",
+        brickResultsTotalBricks: "Total Bricks (with {waste}% waste + {workmanship}% workmanship):",
+        brickResultsTotalBrickWeight: "Total Brick Weight (approx):",
+        brickResultsBondPatternFactor: "Bond Pattern Factor ({bondPattern}):",
+        brickResultsWetMortarVolume: "Wet Mortar Volume (in wall):",
+        brickResultsDryMortarVolume: "Dry Mortar Mix Volume:",
+        brickResultsCementRequired: "Cement Required ({cementPart}:{sandPart} {mortarType}):",
+        brickResultsLimeRequired: "Lime Required:",
+        brickResultsSandRequired: "Sand Required ({bulkingFactor}% bulking):",
+        brickResultsCompacted: "(compacted)",
+        brickResultsLoose: "(loose)",
+        brickResultsPerformanceMetrics: "Performance Metrics",
+        bricksPerSqM: "Bricks per m² ({wallThickness}mm wall):",
+        bricksPerCuM: "Bricks per m³ of masonry:",
+        brickToMortarRatio: "Brick-to-Mortar Ratio (by volume):",
+        estimatedWallWeight: "Estimated Wall Weight:",
+        noteEngineeringEstimates: "Note: These are engineering estimates. Actual requirements may vary &plusmn;5-50% based on workmanship, material quality, and site conditions. Always consult with a structural engineer for critical projects.",
+        
+        // Area Unit Converter
+        areaUnitConverterTitle: "Area Unit Converter",
+        convertAreaHeader: "Convert Between Area Units",
+        convertAreaDescription: "Enter a value and select units to convert between different area measurement systems.",
+        inputValueTitle: "Input Value",
+        enterValue: "Enter value", // Placeholder
+        fromUnitTitle: "From Unit",
+        toUnitTitle: "To Unit",
+        unitSqYards: "Square Yards (yd²)",
+        unitSqKm: "Square Kilometers (km²)",
+        unitSqMiles: "Square Miles (mi²)",
+        unitBiswansi: "Biswansi",
+        unitBisva: "Bisva",
+        unitBeegha: "Beegha",
+        convertBtn: "Convert",
+        conversionResultsTitle: "Conversion Results",
+        converterInitialText: "Enter a value and select units to convert.",
+        conversionError: "Error",
+        conversionErrorInput: "Please enter a valid number for conversion.",
+        conversionErrorUnsupportedUnit: "Selected units are not supported for conversion.",
+        conversionOriginalValue: "Original Value:",
+        conversionConvertedValue: "Converted Value:",
+        convertedOn: "Converted On:",
+
+        // Tools Section
+        toolsSectionTitle: "Professional Measurement Tools",
+        toolAdvancedCalcTitle: "Advanced Area Calculator",
+        toolAdvancedCalcDesc: "Precision area calculations for any shape with support for multiple geometric formulas and unit systems.",
+        toolAdvancedCalcFeature1: "Support for 10+ geometric shapes",
+        toolAdvancedCalcFeature2: "Custom coordinate input",
+        toolAdvancedCalcFeature3: "Save and load calculations",
+        toolAdvancedCalcFeature4: "Project management",
+        launchCalculatorBtn: "Launch Calculator",
+        toolGisMapConverterTitle: "GIS Map Converter",
+        toolGisMapConverterDesc: "Professional-grade GIS tools for coordinate conversion and map format transformation.",
+        toolGisMapConverterFeature1: "Convert between 20+ coordinate systems",
+        toolGisMapConverterFeature2: "Support for GeoJSON, KML, Shapefile",
+        toolGisMapConverterFeature3: "Batch processing of multiple files",
+        toolGisMapConverterFeature4: "Metadata preservation",
+        launchMapToolsBtn: "Launch Map Tools",
+        toolProfessionalUnitConverterTitle: "Professional Unit Converter",
+        toolProfessionalUnitConverterDesc: "Comprehensive unit conversion system with 100+ measurement units across 15 categories.",
+        toolProfessionalUnitConverterFeature1: "Real-time currency conversion",
+        toolProfessionalUnitConverterFeature2: "Custom unit creation",
+        toolProfessionalUnitConverterFeature3: "Calculation history",
+        toolProfessionalUnitConverterFeature4: "Mobile-friendly interface",
+        launchConverterBtn: "Launch Converter",
+
+        // Resources Section
+        resourcesSectionTitle: "Professional Resources",
+        resourceMeasurementGuideTitle: "Measurement Guide",
+        resourceMeasurementGuideDesc: "Comprehensive guide to professional land measurement techniques and best practices.",
+        resourceMeasurementGuideFeature1: "Step-by-step measurement instructions",
+        resourceMeasurementGuideFeature2: "Tips for irregular plots",
+        resourceMeasurementGuideFeature3: "Common pitfalls to avoid",
+        resourceMeasurementGuideFeature4: "Visual diagrams and examples",
+        downloadGuideBtn: "Download Guide",
+        resourceProfessionalFaqTitle: "Professional FAQ",
+        resourceProfessionalFaqDesc: "Answers to technical questions about land measurement, surveying, and unit conversions.",
+        resourceProfessionalFaqFeature1: "200+ professionally answered questions",
+        resourceProfessionalFaqFeature2: "Searchable knowledge base",
+        resourceProfessionalFaqFeature3: "Regularly updated content",
+        resourceProfessionalFaqFeature4: "Expert contributor network",
+        browseFaqBtn: "Browse FAQ",
+        resourceTechnicalDocsTitle: "Technical Documentation",
+        resourceTechnicalDocsDesc: "Complete technical documentation for surveyors, engineers, and developers.",
+        resourceTechnicalDocsFeature1: "API references",
+        resourceTechnicalDocsFeature2: "Integration guides",
+        resourceTechnicalDocsFeature3: "Troubleshooting manuals",
+        resourceTechnicalDocsFeature4: "Code examples",
+        viewDocsBtn: "View Documentation",
+
+        // FAQ Section
+        faqSectionTitle: "Professional FAQ",
+        faqQ1: "What professional measurement standards does this calculator support?",
+        faqA1P1: "Our calculator adheres to international surveying standards including:",
+        faqA1L1: "ISO 19125 (Geographic information)",
+        faqA1L2: "FGDC Cadastral Data Content Standard",
+        faqA1L3: "Indian Survey Standards (Survey of India)",
+        faqA1L4: "Nepal Survey Department standards",
+        faqA1P2: "We support both traditional local units and international metric standards.",
+        faqQ2: "How accurate are the calculations for professional surveying work?",
+        faqA2P1: "Our calculator provides professional-grade accuracy suitable for:",
+        faqA2L1: "Precision to 6 decimal places for all calculations",
+        faqA2L2: "Support for geodetic coordinate transformations",
+        faqA2L3: "Ellipsoidal earth model corrections",
+        faqA2L4: "Customizable rounding for legal descriptions",
+        faqA2P2: "For high-precision cadastral surveys, we recommend using our professional desktop software with GNSS integration.",
+        faqQ3: "Can I import data from professional surveying equipment?",
+        faqA3P1: "Yes, our professional version supports direct import from:",
+        faqA3L1: "Total stations (Leica, Trimble, Topcon formats)",
+        faqA3L2: "GNSS/GPS survey equipment",
+        faqA3L3: "CAD files (DWG, DXF)",
+        faqA3L4: "GIS formats (Shapefile, GeoJSON, KML)",
+        faqA3P2: "Data can be exported to industry-standard formats for use in CAD and GIS applications.",
+        faqQ4: "How do I calculate area for irregular shaped properties?",
+        faqA4P1: "For professional measurement of irregular parcels:",
+        faqA4L1: "Use our coordinate-based area calculator",
+        faqA4L2: "Input boundary points from your survey",
+        faqA4L3: "Apply the DMD (Double Meridian Distance) method",
+        faqA4L4: "Use the Simpson's Rule for curved boundaries",
+        faqA4L5: "Account for slope corrections if needed",
+        faqA4P2: "Our software automatically applies professional algorithms for maximum accuracy.",
+        faqQ5: "What professional reports can I generate?",
+        faqA5P1: "Our professional version generates survey-grade reports including:",
+        faqA5L1: "Legal area certificates",
+        faqA5L2: "Survey plats and sketches",
+        faqA5L3: "Boundary descriptions",
+        faqA5L4: "Calculated area summaries",
+        faqA5L5: "Coordinate lists",
+        faqA5L6: "Custom-branded reports",
+        faqA5P2: "All reports comply with local land record requirements.",
+
+        // About Section
+        aboutSectionTitle: "Professional Services",
+        aboutServicesTitle: "About Our Professional Services",
+        aboutServicesP1: "GeoMeasure Pro was founded in 2015 by Pramod Kumar, a licensed surveyor with over 20 years of experience in cadastral surveying and land measurement. Our tools are trusted by over 50,000 professionals across India, Nepal, and internationally.",
+        aboutServicesP2: "We specialize in developing professional-grade measurement tools that combine traditional knowledge with modern technology. Our team includes surveyors, software engineers, and GIS specialists dedicated to creating accurate, reliable tools for land professionals.",
+        aboutCertificationsTitle: "Professional Certifications",
+        aboutCertificationsL1: "Licensed Surveying Software Provider (India)",
+        aboutCertificationsL2: "ISO 9001:2015 Certified Development Process",
+        aboutCertificationsL3: "Member of International Federation of Surveyors (FIG)",
+        aboutCertificationsL4: "Recognized by Survey of India for educational use",
+        aboutContactTitle: "Professional Contact",
+        aboutContactP1: "For professional support, enterprise licensing, or custom solutions:",
+        contactEmail: "pro@geomeasure.com",
+        contactPhone: "+91 11 2345 6789",
+        contactAddress: "Survey House, New Delhi, India",
+        contactHours: "Mon-Fri: 9AM-6PM IST",
+        aboutPrivacySecurityTitle: "Professional Privacy & Security",
+        aboutPrivacySecurityP1: "We adhere to the highest standards of data security for professional users:",
+        aboutPrivacySecurityL1: "End-to-end encryption for all data transfers",
+        aboutPrivacySecurityL2: "On-premise deployment options",
+        aboutPrivacySecurityL3: "GDPR compliant data handling",
+        aboutPrivacySecurityL4: "Regular security audits",
+
+        // Sidebar
+        sidebarTipsTitle: "Professional Tips",
+        sidebarMeasurementBestPracticesTitle: "Measurement Best Practices",
+        sidebarMeasurementBestPracticesP1: "For professional accuracy:",
+        sidebarMeasurementBestPracticesL1: "Always measure from permanent monuments",
+        sidebarMeasurementBestPracticesL2: "Take multiple measurements of each line",
+        sidebarMeasurementBestPracticesL3: "Account for slope when measuring hilly terrain",
+        sidebarMeasurementBestPracticesL4: "Document your measurement methods",
+        sidebarMeasurementBestPracticesL5: "Verify with independent calculations",
+        sidebarUnitConversionFactorsTitle: "Unit Conversion Factors",
+        sidebarUnitConversionFactorsP1: "Professional reference:",
+        sidebarUnitConversionFactorsL1: "1 Beegha = 20 Bisva = 400 Biswansi",
+        sidebarUnitConversionFactorsL2: "1 Acre = 1.6 Beegha (varies by region)",
+        sidebarUnitConversionFactorsL3: "1 Hectare = 2.471 Acres",
+        sidebarUnitConversionFactorsL4: "1 Gattha = 33 sq ft (UP) or 36 sq ft (Bihar)",
+        sidebarUnitConversionFactorsP2: "Always verify local conversion standards.",
+        sidebarUpcomingTrainingTitle: "Upcoming Professional Training",
+        sidebarUpcomingTrainingP1: "Land Measurement Certification:",
+        sidebarUpcomingTrainingP2: "Next session: June 15-17, 2024",
+        sidebarUpcomingTrainingP3: "Topics: Advanced area calculation, Survey techniques, Legal aspects",
+        learnMoreBtn: "Learn More",
+
+        // Footer
+        footerAboutDescription: "Professional land measurement tools for surveyors, engineers, and property professionals. Accurate, reliable, and trusted since 2015.",
+        footerQuickLinksTitle: "Professional Tools",
+        footerResourcesTitle: "Resources",
+        footerCompanyTitle: "Company",
+        copyrightText: "&copy; 2024 GeoMeasure Pro. All rights reserved.",
+        footerAdvancedCalc: "Advanced Calculator",
+        footerBrickCalc: "Brick Calculator",
+        footerUnitConverter: "Unit Converter Pro",
+        footerVolumeCalc: "Volume Calculator",
+        footerSurveyTools: "Survey Tools",
+        footerMeasurementStandards: "Measurement Standards",
+        footerProfessionalFaq: "Professional FAQ",
+        footerTechnicalDocs: "Technical Docs",
+        footerTrainingVideos: "Training Videos",
+        footerSurveyorBlog: "Surveyor's Blog",
+        footerAboutUsLink: "About Us",
+        footerContactProTeamLink: "Contact Pro Team",
+        footerContactProTeam: "Contact Pro Team",
+        navPrivacyPolicyLink: "Privacy Policy",
+        footerTermsOfService: "Terms of Service",
+        footerCareers: "Careers",
+        footerTerms: "Terms",
+        footerPrivacy: "Privacy",
+        footerSitemap: "Sitemap",
+        footerApi: "API",
+        footerSupport: "Support",
+
+        // Common/General UI
+        dialogAdvancedOptionsTitle: "Advanced Options",
+        dialogAdvancedOptionsMessage: "Advanced options for the Brick & Material Calculator are already integrated into the main form. You can adjust mortar type, bond pattern, wastage, workmanship, and sand bulking factors directly within the inputs for precise calculations.",
+        dialogGotIt: "Got It!",
+        dialogNoResultsTitle: "No Results",
+        dialogNoResultsMessage: "Please perform a calculation first to export results.",
+        dialogOK: "OK",
+        dialogComingSoonTitle: "Coming Soon!",
+        dialogComingSoonMessage: "This professional feature is coming soon! Contact us for early access or more information.",
+        dialogClose: "Close"
+
+      },
+      hi: {
+        pageTitle: "जियोमेजर प्रो - पेशेवर भूमि और निर्माण मापन उपकरण",
+        metaDescription: "उन्नत भूमि माप और निर्माण कैलकुलेटर कई इकाई रूपांतरणों, मानचित्रण उपकरणों और पेशेवर रिपोर्टिंग के साथ",
+        navHome: "होम",
+        navCalculator: "कैलकुलेटर",
+        navBrickCalculator: "ईंट कैलकुलेटर",
+        navTools: "उपकरण",
+        navResources: "संसाधन",
+        navAbout: "हमारे बारे में",
+        navContact: "संपर्क करें",
+        navHomeText: "होम",
+        navCalculatorText: "कैलकुलेटर",
+        navBrickCalculatorText: "ईंट कैलकुलेटर",
+        navToolsText: "उपकरण",
+        navResourcesText: "संसाधन",
+        navAboutText: "हमारे बारे में",
+        navContactText: "संपर्क करें",
+        navPrivacyPolicyText: "गोपनीयता नीति",
+        heroTitle: "आपकी उंगलियों पर सटीक भूमि मापन",
+        heroDescription: "सटीक भूमि और निर्माण क्षेत्र गणना, इकाई रूपांतरण और पेशेवर रिपोर्टिंग के लिए उन्नत उपकरण।",
+        heroCTA: "अभी शुरू करें",
+        featuresSectionTitle: "हमारी शक्तिशाली विशेषताएँ",
+        feature1Title: "सटीक क्षेत्र गणना",
+        feature1Description: "हमारे सहज ज्ञान युक्त मानचित्रण उपकरणों का उपयोग करके किसी भी भूमि क्षेत्र को उच्च सटीकता के साथ मापें।",
+        feature2Title: "इकाई रूपांतरण",
+        feature2Description: "एकड़, हेक्टेयर, वर्ग फुट और कई अन्य इकाइयों के बीच आसानी से रूपांतरण करें।",
+        feature3Title: "व्यावसायिक रिपोर्ट",
+        feature3Description: "पेशेवर उपयोग के लिए अपने मापों की विस्तृत पीडीएफ और सीएसवी रिपोर्ट तैयार करें।",
+        feature4Title: "मोबाइल अनुकूल",
+        feature4Description: "किसी भी डिवाइस पर, कभी भी, कहीं भी हमारे टूल को सहजता से एक्सेस और उपयोग करें।",
+
+        // Land Area Calculator
+        landCalcTitle: "प्रमोद कुमार द्वारा भूमि क्षेत्र कैलकुलेटर",
+        landCalcHeader: "पेशेवर भूमि मापन",
+        landCalcDescription: "अपने खेत के विपरीत भुजाओं के माप दर्ज करें। कैलकुलेटर विपरीत भुजाओं के प्रत्येक जोड़े का औसत निकालेगा, पारंपरिक माप प्रणाली में परिवर्तित करेगा, और कई इकाइयों में क्षेत्र की गणना करेगा।",
+        fieldDiagramTitle: "क्षेत्र आरेख",
+        fieldDiagramText: "विपरीत भुजाओं को दर्शाने वाला सरलीकृत क्षेत्र प्रतिनिधित्व",
+        mapHint: "अपने खेत की सीमाओं को चिह्नित करने के लिए मानचित्र पर क्लिक करें",
+        sideYTitle: "भुजा y",
+        sideXTitle: "भुजा x (y के विपरीत)",
+        sideVTitle: "भुजा v",
+        sideUTitle: "भुजा u (v के विपरीत)",
+        enterLength: "लंबाई दर्ज करें", // Placeholder
+        measurementUnitTitle: "माप इकाई",
+        unitMeter: "मीटर",
+        unitFeet: "फीट",
+        unitGattha: "गट्ठा",
+        unitYard: "गज",
+        unitChain: "चेन",
+        projectNameTitle: "परियोजना का नाम",
+        optionalProjectName: "वैकल्पिक परियोजना का नाम", // Placeholder
+        additionalConversionsTitle: "अतिरिक्त रूपांतरण",
+        showAcre: "एकड़ में दिखाएँ",
+        showHectare: "हेक्टेयर में दिखाएँ",
+        showSqft: "वर्ग फुट में दिखाएँ",
+        showSqm: "वर्ग मीटर में दिखाएँ",
+        calculateAreaBtn: "क्षेत्र की गणना करें",
+        resetBtn: "रीसेट करें",
+        calcResultsTitle: "गणना परिणाम",
+        calcResultsInitialText: "अपने खेत के आयाम दर्ज करें और \"क्षेत्र की गणना करें\" पर क्लिक करें",
+        exportPdfBtn: "पीडीएफ में निर्यात करें",
+        exportCsvBtn: "सीएसवी में निर्यात करें",
+        printResultsBtn: "परिणाम प्रिंट करें",
+        calcError: "त्रुटि",
+        calcErrorInput: "कृपया सभी चार भुजाओं के माप सही ढंग से दर्ज करें और सुनिश्चित करें कि वे धनात्मक संख्याएँ हैं।",
+        calcErrorInvalidUnit: "भूमि क्षेत्र गणना के लिए अमान्य इकाई का चयन किया गया।",
+        calcResultsTraditionalUnits: "पारंपरिक इकाइयाँ:",
+        calcResultsAcres: "एकड़:",
+        calcResultsHectares: "हेक्टेयर:",
+        calcResultsSqFeet: "वर्ग फुट:",
+        calcResultsSqMeters: "वर्ग मीटर:",
+        calcMethod: "गणना विधि:",
+        calcMethodValue: "विपरीत भुजाओं का औसत (ट्रेपेज़ोइडल अनुमान)",
+        calculatedOn: "गणना की गई तिथि:",
+
+        // Brick Calculator
+        brickCalcTitle: "सटीक ईंट और सामग्री कैलकुलेटर",
+        brickCalcHeader: "उन्नत ईंट और सामग्री कैलकुलेटर",
+        brickCalcDescription: "ईंटों, मोर्टार, सीमेंट और रेत के लिए मिलीमीटर परिशुद्धता के साथ सटीक कैलकुलेटर। इसमें ईंट की बर्बादी के पैटर्न और विस्तृत विवरण शामिल हैं।",
+        wallSpecsTitle: "दीवार विनिर्देश",
+        wallLengthLabel: "दीवार की लंबाई:",
+        wallHeightLabel: "दीवार की ऊँचाई:",
+        wallThicknessLabel: "दीवार की मोटाई:",
+        wallThicknessInfo: "मानक मोटाई: 115 मिमी (½ ईंट), 230 मिमी (1 ईंट), 345 मिमी (1½ ईंट)",
+        wallOpeningsLabel: "कुल उद्घाटन क्षेत्र (दरवाजे/खिड़कियाँ):",
+        wallOpeningsInfo: "अधिक सटीक परिणामों के लिए दरवाजे/खिड़कियों का क्षेत्रफल घटाएँ",
+        unitMeters: "मीटर (m)",
+        unitFeet: "फीट (ft)",
+        unitInches: "इंच (in)",
+        unitCentimeters: "सेंटीमीटर (cm)",
+        unitMillimeters: "मिलीमीटर (mm)",
+        unitSqMeters: "वर्ग मीटर (m²)",
+        unitSqFeet: "वर्ग फुट (ft²)",
+        brickSpecsTitle: "ईंट विनिर्देश",
+        brickTypePresetLabel: "ईंट प्रकार प्रीसेट:",
+        brickPresetCustom: "कस्टम आयाम",
+        brickPresetIndian: "भारतीय मानक (230×115×75मिमी)",
+        brickPresetUK: "यूके मानक (215×102.5×65मिमी)",
+        brickPresetUS: "यूएस मानक (203×92×57मिमी)",
+        brickPresetAustralian: "ऑस्ट्रेलियाई मानक (230×110×76मिमी)",
+        brickPresetModular: "मॉड्यूलर मीट्रिक (190×90×90मिमी)",
+        brickPresetJumbo: "जंबो मीट्रिक (290×90×90मिमी)",
+        brickLengthLabel: "ईंट की लंबाई:",
+        brickWidthLabel: "ईंट की चौड़ाई:",
+        brickHeightLabel: "ईंट की ऊँचाई:",
+        brickDensityLabel: "ईंट घनत्व (किग्रा/मी³):",
+        brickDensityInfo: "मानक मिट्टी की ईंट: ~1920 किग्रा/मी³, कंक्रीट: ~2000-2400 किग्रा/मी³",
+        mortarSpecsTitle: "मोर्टार विनिर्देश",
+        mortarThicknessLabel: "मोर्टार संयुक्त मोटाई:",
+        mortarThicknessInfo: "मानक: क्षैतिज के लिए 10 मिमी (3/8\"), ऊर्ध्वाधर जोड़ों के लिए 10-12 मिमी",
+        mortarMixRatioLabel: "मोर्टार मिश्रण अनुपात (सीमेंट : रेत):",
+        colonSeparator: ":",
+        mortarMixRatioInfo: "सामान्य अनुपात: 1:3 (मजबूत), 1:4 (सामान्य), 1:6 (नींव)",
+        mortarTypeLabel: "मोर्टार प्रकार:",
+        mortarTypeCement: "सीमेंट मोर्टार",
+        mortarTypeLime: "चूना मोर्टार",
+        mortarTypeComposite: "समग्र मोर्टार",
+        mortarAdditivesLabel: "योजक (वजन के अनुसार %):",
+        mortarAdditivesInfo: "प्लास्टिकाइज़र, वॉटरप्रूफिंग (आमतौर पर 0.5-2%)",
+        constructionFactorsTitle: "निर्माण कारक",
+        bondPatternLabel: "बॉन्ड पैटर्न:",
+        bondStretcher: "स्ट्रेचर बॉन्ड",
+        bondEnglish: "अंग्रेजी बॉन्ड",
+        bondFlemish: "फ्लेमिश बॉन्ड",
+        bondHeader: "हेडर बॉन्ड",
+        bondStack: "स्टैक बॉन्ड",
+        wasteFactorLabel: "बर्बादी कारक (%):",
+        wasteFactorInfo: "सामान्य: 5-10% (जटिल पैटर्न के लिए अधिक)",
+        workmanshipFactorLabel: "कारीगरी कारक (%):",
+        workmanshipFactorInfo: "कारीगरी भिन्नताओं के लिए अतिरिक्त (1-3%)",
+        bulkingFactorLabel: "रेत बल्किंग कारक (%):",
+        bulkingFactorInfo: "रेत नम होने पर आयतन में वृद्धि (15-30%)",
+        calculatePrecisionBtn: "सटीकता के साथ गणना करें",
+        resetAllBtn: "सभी रीसेट करें",
+        advancedBtn: "उन्नत",
+        precisionCalcResultsTitle: "सटीक गणना परिणाम",
+        precisionCalcResultsInitialText: "विस्तृत सामग्री अनुमान प्राप्त करने के लिए विनिर्देश दर्ज करें।",
+        brickCalcError: "गणना त्रुटि",
+        brickCalcErrorInput: "के लिए अमान्य इनपुट \"", // Part of error message
+        brickCalcErrorPositive: "कृपया एक वैध संख्या दर्ज करें।", // Part of error message
+        brickCalcErrorWallDims: "दीवार के आयाम (लंबाई, ऊँचाई, मोटाई) धनात्मक मान होने चाहिए।",
+        brickCalcErrorBrickDims: "ईंट के आयाम (लंबाई, चौड़ाई, ऊँचाई) धनात्मक मान होने चाहिए।",
+        brickCalcErrorMortarNeg: "मोर्टार संयुक्त मोटाई ऋणात्मक नहीं हो सकती।",
+        brickCalcErrorMortarRatio: "मोर्टार मिश्रण अनुपात (सीमेंट:रेत) में धनात्मक मान होने चाहिए।",
+        brickCalcErrorBrickDensity: "ईंट घनत्व धनात्मक मान होना चाहिए।",
+        brickCalcErrorOpeningsNeg: "उद्घाटन क्षेत्र ऋणात्मक नहीं हो सकता।",
+        brickCalcErrorNetWallArea: "उद्घाटन के लिए लेखांकन के बाद शुद्ध दीवार क्षेत्र शून्य या ऋणात्मक है। कृपया आयाम या उद्घाटन क्षेत्र की जाँच करें।",
+        brickResultsNetWallArea: "शुद्ध दीवार क्षेत्र:",
+        brickResultsTheoreticalBricks: "सैद्धांतिक ईंट इकाइयाँ:",
+        brickResultsTotalBricks: "कुल ईंटें ({waste}% बर्बादी + {workmanship}% कारीगरी के साथ):",
+        brickResultsTotalBrickWeight: "कुल ईंट वजन (लगभग):",
+        brickResultsBondPatternFactor: "बॉन्ड पैटर्न कारक ({bondPattern}):",
+        brickResultsWetMortarVolume: "गीला मोर्टार आयतन (दीवार में):",
+        brickResultsDryMortarVolume: "सूखा मोर्टार मिश्रण आयतन:",
+        brickResultsCementRequired: "सीमेंट आवश्यक ({cementPart}:{sandPart} {mortarType}):",
+        brickResultsLimeRequired: "चूना आवश्यक:",
+        brickResultsSandRequired: "रेत आवश्यक ({bulkingFactor}% बल्किंग):",
+        brickResultsCompacted: "(सघन)",
+        brickResultsLoose: "(ढीला)",
+        bricksPerSqM: "ईंटें प्रति वर्ग मीटर ({wallThickness}मिमी दीवार):",
+        bricksPerCuM: "ईंटें प्रति घन मीटर चिनाई:",
+        brickToMortarRatio: "ईंट-से-मोर्टार अनुपात (आयतन द्वारा):",
+        estimatedWallWeight: "अनुमानित दीवार वजन:",
+        noteEngineeringEstimates: "नोट: ये इंजीनियरिंग अनुमान हैं। कारीगरी, सामग्री की गुणवत्ता और साइट की स्थितियों के आधार पर वास्तविक आवश्यकताएं ±5-50% भिन्न हो सकती हैं। महत्वपूर्ण परियोजनाओं के लिए हमेशा एक संरचनात्मक इंजीनियर से परामर्श करें।",
+        
+        // Area Unit Converter
+        areaUnitConverterTitle: "क्षेत्र इकाई कनवर्टर",
+        convertAreaHeader: "क्षेत्र इकाइयों के बीच कनवर्ट करें",
+        convertAreaDescription: "एक मान दर्ज करें और विभिन्न क्षेत्र माप प्रणालियों के बीच कनवर्ट करने के लिए इकाइयाँ चुनें।",
+        inputValueTitle: "इनपुट मान",
+        enterValue: "मान दर्ज करें", // Placeholder
+        fromUnitTitle: "से इकाई",
+        toUnitTitle: "को इकाई",
+        unitSqYards: "वर्ग गज (yd²)",
+        unitSqKm: "वर्ग किलोमीटर (km²)",
+        unitSqMiles: "वर्ग मील (mi²)",
+        unitBiswansi: "बिस्वांसी",
+        unitBisva: "बिस्वा",
+        unitBeegha: "बीघा",
+        convertBtn: "कनवर्ट करें",
+        conversionResultsTitle: "रूपांतरण परिणाम",
+        converterInitialText: "एक मान दर्ज करें और कनवर्ट करने के लिए इकाइयाँ चुनें।",
+        conversionError: "त्रुटि",
+        conversionErrorInput: "कृपया रूपांतरण के लिए एक वैध संख्या दर्ज करें।",
+        conversionErrorUnsupportedUnit: "चयनित इकाइयाँ रूपांतरण के लिए समर्थित नहीं हैं।",
+        conversionOriginalValue: "मूल्य:",
+        conversionConvertedValue: "रूपांतरित मूल्य:",
+        convertedOn: "रूपांतरित तिथि:",
+
+        // Tools Section
+        toolsSectionTitle: "पेशेवर मापन उपकरण",
+        toolAdvancedCalcTitle: "उन्नत क्षेत्र कैलकुलेटर",
+        toolAdvancedCalcDesc: "कई ज्यामितीय सूत्रों और इकाई प्रणालियों के समर्थन के साथ किसी भी आकार के लिए सटीक क्षेत्र गणना।",
+        toolAdvancedCalcFeature1: "10+ ज्यामितीय आकृतियों के लिए समर्थन",
+        toolAdvancedCalcFeature2: "कस्टम समन्वय इनपुट",
+        toolAdvancedCalcFeature3: "गणना सहेजें और लोड करें",
+        toolAdvancedCalcFeature4: "परियोजना प्रबंधन",
+        launchCalculatorBtn: "कैलकुलेटर लॉन्च करें",
+        toolGisMapConverterTitle: "जीआईएस मानचित्र कनवर्टर",
+        toolGisMapConverterDesc: "समन्वय रूपांतरण और मानचित्र प्रारूप परिवर्तन के लिए पेशेवर-ग्रेड जीआईएस उपकरण।",
+        toolGisMapConverterFeature1: "20+ समन्वय प्रणालियों के बीच कनवर्ट करें",
+        toolGisMapConverterFeature2: "जियोजेसन, केएमएल, शेपफाइल के लिए समर्थन",
+        toolGisMapConverterFeature3: "कई फाइलों का बैच प्रसंस्करण",
+        toolGisMapConverterFeature4: "मेटाडेटा संरक्षण",
+        launchMapToolsBtn: "मानचित्र उपकरण लॉन्च करें",
+        toolProfessionalUnitConverterTitle: "पेशेवर इकाई कनवर्टर",
+        toolProfessionalUnitConverterDesc: "15 श्रेणियों में 100+ माप इकाइयों के साथ व्यापक इकाई रूपांतरण प्रणाली।",
+        toolProfessionalUnitConverterFeature1: "वास्तविक समय मुद्रा रूपांतरण",
+        toolProfessionalUnitConverterFeature2: "कस्टम इकाई निर्माण",
+        toolProfessionalUnitConverterFeature3: "गणना इतिहास",
+        toolProfessionalUnitConverterFeature4: "मोबाइल-अनुकूल इंटरफ़ेस",
+        launchConverterBtn: "कनवर्टर लॉन्च करें",
+
+        // Resources Section
+        resourcesSectionTitle: "पेशेवर संसाधन",
+        resourceMeasurementGuideTitle: "मापन मार्गदर्शिका",
+        resourceMeasurementGuideDesc: "पेशेवर भूमि मापन तकनीकों और सर्वोत्तम प्रथाओं के लिए व्यापक मार्गदर्शिका।",
+        resourceMeasurementGuideFeature1: "चरण-दर-चरण माप निर्देश",
+        resourceMeasurementGuideFeature2: "अनियमित भूखंडों के लिए युक्तियाँ",
+        resourceMeasurementGuideFeature3: "सामान्य कमियों से बचें",
+        resourceMeasurementGuideFeature4: "दृश्य आरेख और उदाहरण",
+        downloadGuideBtn: "मार्गदर्शिका डाउनलोड करें",
+        resourceProfessionalFaqTitle: "पेशेवर अक्सर पूछे जाने वाले प्रश्न",
+        resourceProfessionalFaqDesc: "भूमि माप, सर्वेक्षण और इकाई रूपांतरण के बारे में तकनीकी प्रश्नों के उत्तर।",
+        resourceProfessionalFaqFeature1: "200+ पेशेवर रूप से उत्तरित प्रश्न",
+        resourceProfessionalFaqFeature2: "खोज योग्य ज्ञान आधार",
+        resourceProfessionalFaqFeature3: "नियमित रूप से अद्यतन सामग्री",
+        resourceProfessionalFaqFeature4: "विशेषज्ञ योगदानकर्ता नेटवर्क",
+        browseFaqBtn: "अक्सर पूछे जाने वाले प्रश्न ब्राउज़ करें",
+        resourceTechnicalDocsTitle: "तकनीकी दस्तावेज़",
+        resourceTechnicalDocsDesc: "सर्वेक्षकों, इंजीनियरों और डेवलपर्स के लिए पूर्ण तकनीकी दस्तावेज़।",
+        resourceTechnicalDocsFeature1: "एपीआई संदर्भ",
+        resourceTechnicalDocsFeature2: "एकीकरण मार्गदर्शिकाएँ",
+        resourceTechnicalDocsFeature3: "समस्या निवारण मैनुअल",
+        resourceTechnicalDocsFeature4: "कोड उदाहरण",
+        viewDocsBtn: "दस्तावेज़ देखें",
+
+        // FAQ Section
+        faqSectionTitle: "पेशेवर अक्सर पूछे जाने वाले प्रश्न",
+        faqQ1: "यह कैलकुलेटर किन पेशेवर मापन मानकों का समर्थन करता है?",
+        faqA1P1: "हमारा कैलकुलेटर अंतरराष्ट्रीय सर्वेक्षण मानकों का पालन करता है, जिसमें शामिल हैं:",
+        faqA1L1: "आईएसओ 19125 (भौगोलिक जानकारी)",
+        faqA1L2: "एफजीडीसी कैडस्ट्रल डेटा कंटेंट स्टैंडर्ड",
+        faqA1L3: "भारतीय सर्वेक्षण मानक (भारतीय सर्वेक्षण विभाग)",
+        faqA1L4: "नेपाल सर्वेक्षण विभाग मानक",
+        faqA1P2: "हम पारंपरिक स्थानीय इकाइयों और अंतरराष्ट्रीय मीट्रिक मानकों दोनों का समर्थन करते हैं।",
+        faqQ2: "पेशेवर सर्वेक्षण कार्य के लिए गणना कितनी सटीक है?",
+        faqA2P1: "हमारा कैलकुलेटर पेशेवर-ग्रेड सटीकता प्रदान करता है, जो इसके लिए उपयुक्त है:",
+        faqA2L1: "सभी गणनाओं के लिए 6 दशमलव स्थानों तक सटीकता",
+        faqA2L2: "भूगर्भीय समन्वय परिवर्तनों के लिए समर्थन",
+        faqA2L3: "दीर्घवृत्ताभ पृथ्वी मॉडल सुधार",
+        faqA2L4: "कानूनी विवरणों के लिए अनुकूलन योग्य राउंडिंग",
+        faqA2P2: "उच्च-परिशुद्धता कैडस्ट्रल सर्वेक्षणों के लिए, हम जीएनएसएस एकीकरण के साथ हमारे पेशेवर डेस्कटॉप सॉफ़्टवेयर का उपयोग करने की सलाह देते हैं।",
+        faqQ3: "क्या मैं पेशेवर सर्वेक्षण उपकरण से डेटा आयात कर सकता हूँ?",
+        faqA3P1: "हाँ, हमारा पेशेवर संस्करण सीधे आयात का समर्थन करता है:",
+        faqA3L1: "कुल स्टेशन (लाइका, ट्रिम्बल, टॉपकॉन प्रारूप)",
+        faqA3L2: "जीएनएसएस/जीपीएस सर्वेक्षण उपकरण",
+        faqA3L3: "सीएडी फाइलें (डीडब्ल्यूजी, डीएक्सएफ)",
+        faqA3L4: "जीआईएस प्रारूप (शेपफाइल, जियोजेसन, केएमएल)",
+        faqA3P2: "डेटा को सीएडी और जीआईएस अनुप्रयोगों में उपयोग के लिए उद्योग-मानक प्रारूपों में निर्यात किया जा सकता है।",
+        faqQ4: "मैं अनियमित आकार की संपत्तियों के लिए क्षेत्र की गणना कैसे करूं?",
+        faqA4P1: "अनियमित भूखंडों के पेशेवर मापन के लिए:",
+        faqA4L1: "हमारे समन्वय-आधारित क्षेत्र कैलकुलेटर का उपयोग करें",
+        faqA4L2: "अपने सर्वेक्षण से सीमा बिंदु इनपुट करें",
+        faqA4L3: "डीएमडी (डबल मेरिडियन डिस्टेंस) विधि लागू करें",
+        faqA4L4: "घुमावदार सीमाओं के लिए सिम्पसन के नियम का उपयोग करें",
+        faqA4L5: "यदि आवश्यक हो तो ढलान सुधारों का हिसाब दें",
+        faqA4P2: "हमारा सॉफ़्टवेयर अधिकतम सटीकता के लिए पेशेवर एल्गोरिदम स्वचालित रूप से लागू करता है।",
+        faqQ5: "मैं कौन सी पेशेवर रिपोर्ट तैयार कर सकता हूं?",
+        faqA5P1: "हमारा पेशेवर संस्करण सर्वेक्षण-ग्रेड रिपोर्ट तैयार करता है, जिसमें शामिल हैं:",
+        faqA5L1: "कानूनी क्षेत्र प्रमाण पत्र",
+        faqA5L2: "सर्वेक्षण प्लेट और रेखाचित्र",
+        faqA5L3: "सीमा विवरण",
+        faqA5L4: "गणना किए गए क्षेत्र सारांश",
+        faqA5L5: "समन्वय सूची",
+        faqA5L6: "कस्टम-ब्रांडेड रिपोर्ट",
+        faqA5P2: "सभी रिपोर्ट स्थानीय भूमि रिकॉर्ड आवश्यकताओं का पालन करती हैं।",
+
+        // About Section
+        aboutSectionTitle: "पेशेवर सेवाएँ",
+        aboutServicesTitle: "हमारी पेशेवर सेवाओं के बारे में",
+        aboutServicesP1: "जियोमेजर प्रो की स्थापना 2015 में प्रमोद कुमार द्वारा की गई थी, जो कैडस्ट्रल सर्वेक्षण और भूमि माप में 20 से अधिक वर्षों के अनुभव के साथ एक लाइसेंस प्राप्त सर्वेक्षक हैं। हमारे उपकरण भारत, नेपाल और अंतरराष्ट्रीय स्तर पर 50,000 से अधिक पेशेवरों द्वारा विश्वसनीय हैं।",
+        aboutServicesP2: "हम पेशेवर-ग्रेड मापन उपकरण विकसित करने में विशेषज्ञ हैं जो पारंपरिक ज्ञान को आधुनिक तकनीक के साथ जोड़ते हैं। हमारी टीम में सर्वेक्षक, सॉफ्टवेयर इंजीनियर और जीआईएस विशेषज्ञ शामिल हैं जो भूमि पेशेवरों के लिए सटीक, विश्वसनीय उपकरण बनाने के लिए समर्पित हैं।",
+        aboutCertificationsTitle: "पेशेवर प्रमाणपत्र",
+        aboutCertificationsL1: "लाइसेंस प्राप्त सर्वेक्षण सॉफ्टवेयर प्रदाता (भारत)",
+        aboutCertificationsL2: "आईएसओ 9001:2015 प्रमाणित विकास प्रक्रिया",
+        aboutCertificationsL3: "इंटरनेशनल फेडरेशन ऑफ सर्वेयर्स (एफआईजी) के सदस्य",
+        aboutCertificationsL4: "शैक्षिक उपयोग के लिए भारतीय सर्वेक्षण विभाग द्वारा मान्यता प्राप्त",
+        aboutContactTitle: "पेशेवर संपर्क",
+        aboutContactP1: "पेशेवर सहायता, एंटरप्राइज़ लाइसेंसिंग, या कस्टम समाधान के लिए:",
+        contactEmail: "pro@geomeasure.com",
+        contactPhone: "+91 11 2345 6789",
+        contactAddress: "सर्वे हाउस, नई दिल्ली, भारत",
+        contactHours: "सोम-शुक्र: सुबह 9 बजे से शाम 6 बजे IST",
+        aboutPrivacySecurityTitle: "पेशेवर गोपनीयता और सुरक्षा",
+        aboutPrivacySecurityP1: "हम पेशेवर उपयोगकर्ताओं के लिए डेटा सुरक्षा के उच्चतम मानकों का पालन करते हैं:",
+        aboutPrivacySecurityL1: "सभी डेटा स्थानान्तरण के लिए एंड-टू-एंड एन्क्रिप्शन",
+        aboutPrivacySecurityL2: "ऑन-प्रिमाइसेस परिनियोजन विकल्प",
+        aboutPrivacySecurityL3: "जीडीपीआर शिकायत डेटा हैंडलिंग",
+        aboutPrivacySecurityL4: "नियमित सुरक्षा ऑडिट",
+
+        // Sidebar
+        sidebarTipsTitle: "पेशेवर युक्तियाँ",
+        sidebarMeasurementBestPracticesTitle: "मापन सर्वोत्तम अभ्यास",
+        sidebarMeasurementBestPracticesP1: "पेशेवर सटीकता के लिए:",
+        sidebarMeasurementBestPracticesL1: "हमेशा स्थायी स्मारकों से मापें",
+        sidebarMeasurementBestPracticesL2: "प्रत्येक रेखा के कई माप लें",
+        sidebarMeasurementBestPracticesL3: "पहाड़ी इलाकों को मापते समय ढलान का हिसाब दें",
+        sidebarMeasurementBestPracticesL4: "अपनी माप विधियों का दस्तावेजीकरण करें",
+        sidebarMeasurementBestPracticesL5: "स्वतंत्र गणनाओं के साथ सत्यापित करें",
+        sidebarUnitConversionFactorsTitle: "इकाई रूपांतरण कारक",
+        sidebarUnitConversionFactorsP1: "पेशेवर संदर्भ:",
+        sidebarUnitConversionFactorsL1: "1 बीघा = 20 बिस्वा = 400 बिस्वांसी",
+        sidebarUnitConversionFactorsL2: "1 एकड़ = 1.6 बीघा (क्षेत्र के अनुसार भिन्न होता है)",
+        sidebarUnitConversionFactorsL3: "1 हेक्टेयर = 2.471 एकड़",
+        sidebarUnitConversionFactorsL4: "1 गट्ठा = 33 वर्ग फुट (यूपी) या 36 वर्ग फुट (बिहार)",
+        sidebarUnitConversionFactorsP2: "हमेशा स्थानीय रूपांतरण मानकों को सत्यापित करें।",
+        sidebarUpcomingTrainingTitle: "आगामी पेशेवर प्रशिक्षण",
+        sidebarUpcomingTrainingP1: "भूमि मापन प्रमाणन:",
+        sidebarUpcomingTrainingP2: "अगला सत्र: 15-17 जून, 2024",
+        sidebarUpcomingTrainingP3: "विषय: उन्नत क्षेत्र गणना, सर्वेक्षण तकनीकें, कानूनी पहलू",
+        learnMoreBtn: "और जानें",
+
+        // Footer
+        footerAboutDescription: "सर्वेक्षकों, इंजीनियरों और संपत्ति पेशेवरों के लिए पेशेवर भूमि माप उपकरण। 2015 से सटीक, विश्वसनीय और विश्वसनीय।",
+        footerQuickLinksTitle: "पेशेवर उपकरण",
+        footerResourcesTitle: "संसाधन",
+        footerCompanyTitle: "कंपनी",
+        copyrightText: "&copy; 2024 जियोमेजर प्रो। सर्वाधिकार सुरक्षित।",
+        footerAdvancedCalc: "उन्नत कैलकुलेटर",
+        footerBrickCalc: "ईंट कैलकुलेटर",
+        footerUnitConverter: "इकाई कनवर्टर प्रो",
+        footerVolumeCalc: "आयतन कैलकुलेटर",
+        footerSurveyTools: "सर्वेक्षण उपकरण",
+        footerMeasurementStandards: "माप मानक",
+        footerProfessionalFaq: "पेशेवर अक्सर पूछे जाने वाले प्रश्न",
+        footerTechnicalDocs: "तकनीकी दस्तावेज़",
+        footerTrainingVideos: "प्रशिक्षण वीडियो",
+        footerSurveyorBlog: "सर्वेक्षक का ब्लॉग",
+        footerAboutUsLink: "हमारे बारे में",
+        footerContactProTeamLink: "प्रो टीम से संपर्क करें",
+        footerContactProTeam: "प्रो टीम से संपर्क करें",
+        navPrivacyPolicyLink: "गोपनीयता नीति",
+        footerTermsOfService: "सेवा की शर्तें",
+        footerCareers: "करियर",
+        footerTerms: "शर्तें",
+        footerPrivacy: "गोपनीयता",
+        footerSitemap: "साइटमैप",
+        footerApi: "एपीआई",
+        footerSupport: "समर्थन",
+
+        // Common/General UI
+        dialogAdvancedOptionsTitle: "उन्नत विकल्प",
+        dialogAdvancedOptionsMessage: "ईंट और सामग्री कैलकुलेटर के लिए उन्नत विकल्प पहले से ही मुख्य फॉर्म में एकीकृत हैं। आप सटीक गणना के लिए मोर्टार प्रकार, बॉन्ड पैटर्न, बर्बादी, कारीगरी और रेत बल्किंग कारकों को सीधे इनपुट के भीतर समायोजित कर सकते हैं।",
+        dialogGotIt: "समझ गया!",
+        dialogNoResultsTitle: "कोई परिणाम नहीं",
+        dialogNoResultsMessage: "परिणाम निर्यात करने के लिए कृपया पहले एक गणना करें।",
+        dialogOK: "ठीक है",
+        dialogComingSoonTitle: "जल्द आ रहा है!",
+        dialogComingSoonMessage: "यह पेशेवर सुविधा जल्द ही आ रही है! शुरुआती पहुंच या अधिक जानकारी के लिए हमसे संपर्क करें।",
+        dialogClose: "बंद करें"
+      }
+    };
+
+    const langButtons = document.querySelectorAll('.language-switcher button');
+    // Get language preference from localStorage or default to English
+    const defaultLang = localStorage.getItem('selectedLanguage') || 'en';
+
+    // Function to set the language and update content
+    function setLanguage(lang) {
+      document.documentElement.lang = lang; // Set HTML lang attribute for accessibility/SEO
+      const elements = document.querySelectorAll('[data-i18n]');
+      const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+
+      elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          // Special handling for title and meta description
+          if (element.tagName === 'TITLE') {
+            document.title = translations[lang][key];
+          } else if (element.tagName === 'META' && element.name === 'description') {
+            element.setAttribute('content', translations[lang][key]);
+          } else {
+            // Handle placeholders by setting innerHTML, but actual input placeholders are below
+            element.innerHTML = translations[lang][key];
+          }
+        }
+      });
+
+      // Handle placeholders
+      placeholders.forEach(element => {
+          const key = element.getAttribute('data-i18n-placeholder');
+          if (translations[lang] && translations[lang][key]) {
+              element.placeholder = translations[lang][key];
+          }
+      });
+
+
+      // Update active button state
+      langButtons.forEach(button => {
+        if (button.id === `lang-${lang}`) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+
+      // Save language preference to localStorage
+      localStorage.setItem('selectedLanguage', lang);
+
+      // Re-run calculations if any calculator output is visible to update result text
+      // This is a heuristic; ideally, results should be rendered dynamically based on language
+      if (document.getElementById('output').innerHTML.includes('Calculation Results') && !document.getElementById('output').innerHTML.includes('Initial Text')) {
+          calculateArea();
+      }
+      if (document.getElementById('brickOutput').innerHTML.includes('Precision Calculation Results') && !document.getElementById('brickOutput').innerHTML.includes('Initial Text')) {
+          calculateBricks();
+      }
+      if (document.getElementById('converterOutput').innerHTML.includes('Conversion Results') && !document.getElementById('converterOutput').innerHTML.includes('Initial Text')) {
+          convertArea();
+      }
+    }
+
+    // Event Listeners for language buttons
+    langButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const lang = button.id.replace('lang-', '');
+        setLanguage(lang);
+      });
+    });
+
+    // --- General UI Interaction Logic ---
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    mobileMenuBtn.addEventListener('click', function() {
+      navMenu.classList.toggle('show');
+    });
+
+    // Function to toggle accordion sections (used for Calculators, Tools, Resources, About)
+    function toggleSection(contentId, arrowId) {
+      const content = document.getElementById(contentId);
+      const arrow = document.getElementById(arrowId);
+
+      if (content.style.display === 'none' || content.style.display === '') {
+        content.style.display = contentId === 'companyContent' ? 'block' : 'grid'; // 'companyContent' needs 'block' for contact methods
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        content.style.display = 'none';
+        arrow.style.transform = 'rotate(0)';
+      }
+    }
+
+    // Function to toggle FAQ answers
+    function toggleFaq(question) {
+      question.classList.toggle('active');
+      const answer = question.nextElementSibling;
+      answer.classList.toggle('active');
+
+      // Rotate chevron icon
+      const icon = question.querySelector('i');
+      icon.style.transform = answer.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0)';
+    }
+
+    // --- Calculator Specific Logic (Land Area Calculator, Brick Calculator, Unit Converter) ---
+
+    // Toggle main land area calculator content
+    const mainClickBar = document.getElementById('mainClickBar');
+    const calculatorContent = document.getElementById('calculatorContent');
+
+    mainClickBar.addEventListener('click', function() {
+      this.classList.toggle('active');
+      calculatorContent.classList.toggle('active');
+
+      // Rotate arrow icon
+      const arrow = this.querySelector('.arrow');
+      arrow.style.transform = calculatorContent.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+    });
+
+    // Toggle brick calculator content
+    const brickCalculatorBar = document.getElementById('brickCalculatorBar');
+    const brickCalculatorContent = document.getElementById('brickCalculatorContent');
+
+    brickCalculatorBar.addEventListener('click', function() {
+      this.classList.toggle('active');
+      brickCalculatorContent.classList.toggle('active');
+
+      // Rotate arrow icon
+      const arrow = this.querySelector('.arrow');
+      arrow.style.transform = brickCalculatorContent.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+    });
+
+    // Toggle field diagram
+    const fieldDiagramBar = document.getElementById('fieldDiagramBar');
+    const fieldDiagramContent = document.getElementById('fieldDiagramContent');
+
+    fieldDiagramBar.addEventListener('click', function() {
+      this.classList.toggle('active');
+      fieldDiagramContent.classList.toggle('active');
+
+      // Rotate arrow icon
+      const arrow = this.querySelector('.arrow');
+      arrow.style.transform = fieldDiagramContent.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+
+      // Initialize map if not already done and section is active
+      if (fieldDiagramContent.classList.contains('active') && !window.mapInitialized) {
+        initMap();
+        window.mapInitialized = true;
+      }
+    });
+
+    // Initialize Leaflet map for field diagram
+    function initMap() {
+      // Set default view to a common location (e.g., New Delhi, India)
+      const map = L.map('map').setView([28.6139, 77.2090], 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Add drawing tools
+      const drawnItems = new L.FeatureGroup();
+      map.addLayer(drawnItems);
+
+      const drawControl = new L.Control.Draw({
+        edit: {
+          featureGroup: drawnItems
+        },
+        draw: {
+          polygon: {
+            allowIntersection: false,
+            showArea: true
+          },
+          circle: false,
+          marker: false,
+          circlemarker: false,
+          polyline: false, // Disable polyline drawing if not needed for area calc
+          rectangle: false // Disable rectangle drawing
+        }
+      });
+      map.addControl(drawControl);
+
+      map.on(L.Draw.Event.CREATED, function(event) {
+        const layer = event.layer;
+        drawnItems.addLayer(layer);
+
+        // Calculate area if polygon is drawn
+        if (layer instanceof L.Polygon) {
+          const area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+          // Display area in hectares
+          const areaInHectares = (area / 10000).toFixed(4);
+          // Show a custom message instead of alert
+          const mapMessageDiv = document.createElement('div');
+          mapMessageDiv.className = 'warning-message';
+          mapMessageDiv.innerHTML = `<i class="fas fa-info-circle"></i> Calculated Area: ${areaInHectares} hectares`;
+          
+          const mapContainer = document.querySelector('.map-container');
+          mapContainer.parentNode.insertBefore(mapMessageDiv, mapContainer.nextSibling);
+
+          // Remove the message after a few seconds
+          setTimeout(() => {
+            mapMessageDiv.remove();
+          }, 7000);
+        }
+      });
+
+      // Store map instance globally if needed for reset
+      window.map = map;
+      window.drawnItems = drawnItems; // Store drawnItems to clear layers later
+    }
+
+    // Land Area Calculator Functions
+    function calculateArea() {
+      // Get input values
+      let y = parseFloat(document.getElementById('y').value);
+      let x = parseFloat(document.getElementById('x').value);
+      let v = parseFloat(document.getElementById('v').value);
+      let u = parseFloat(document.getElementById('u').value);
+      let unit = parseInt(document.getElementById('unit').value);
+      const projectName = document.getElementById('projectName').value;
+      const outputDiv = document.getElementById('output');
+      const currentLang = document.documentElement.lang;
+
+      // Validate inputs
+      if (isNaN(y) || isNaN(x) || isNaN(v) || isNaN(u) || y <= 0 || x <= 0 || v <= 0 || u <= 0) {
+        outputDiv.innerHTML = `
+          <h3><i class="fas fa-exclamation-triangle"></i> ${translations[currentLang].calcError}</h3>
+          <p class="warning-message"><i class="fas fa-info-circle"></i> ${translations[currentLang].calcErrorInput}</p>
+        `;
+        document.getElementById('exportButtons').style.display = 'none';
+        return;
+      }
+
+      // Calculate average lengths
+      y = (y + x) / 2;
+      v = (v + u) / 2;
+
+      // Conversion factors based on selected unit to a common base (Gattha)
+      // Note: These conversion factors are specific to the original script's interpretation
+      // of "traditional measurement system" and may vary by region.
+      switch(unit) {
+        case 1: // Meter
+          // 1 Meter = approx 100/254 Gattha (based on 99 inches = 1 Gattha, and 1 inch = 0.0254 meters)
+          y = (y * 100) / (2.54 * 99);
+          v = (v * 100) / (2.54 * 99);
+          break;
+        case 2: // Feet
+          // 1 Foot = approx 12/99 Gattha (based on 99 inches = 1 Gattha, and 1 foot = 12 inches)
+          y = (Math.floor(y) + ((y - Math.floor(y)) * 10 / 12)) * 12 / 99; // Handles feet and inches part (feet.inches -> feet + (inches/12))
+          v = (Math.floor(v) + ((v - Math.floor(v)) * 10 / 12)) * 12 / 99;
+          break;
+        case 3: // Gattha
+          // No conversion needed, already in Gattha
+          break;
+        case 4: // Yard
+          // 1 Yard = 3 feet. So, 1 Yard = 36 inches. 1 Yard = 36/99 Gattha
+          y = y * 36 / 99;
+          v = v * 36 / 99;
+          break;
+        case 5: // Chain
+          // 1 Chain = 66 feet. So, 1 Chain = 66 * 12 inches. 1 Chain = (66 * 12) / 99 Gattha
+          y = y * 66 / 99;
+          v = v * 66 / 99;
+          break;
+        default:
+          outputDiv.innerHTML = `
+            <h3><i class="fas fa-exclamation-triangle"></i> ${translations[currentLang].calcError}</h3>
+            <p class="warning-message"><i class="fas fa-info-circle"></i> ${translations[currentLang].calcErrorInvalidUnit}</p>
+          `;
+          document.getElementById('exportButtons').style.display = 'none';
+          return;
+      }
+
+      // Calculate area in biswansi units (original formula assuming 3 biswansi per sq gattha)
+      let area = 3 * y * v; // total biswansi units (This conversion is highly regional and specific)
+
+      // Convert to Beegha, Bisva, Biswansi (Traditional Indian Subcontinent Units)
+      let beegha = Math.floor(area / 400); // 1 Beegha = 400 Biswansi
+      area -= beegha * 400;
+      let bisva = Math.floor(area / 20); // 1 Bisva = 20 Biswansi
+      area -= bisva * 20;
+      let biswansi = area.toFixed(2); // Remaining is Biswansi
+
+      // Prepare the result HTML
+      let result = `
+        <h3><i class="fas fa-chart-pie"></i> ${translations[currentLang].calcResultsTitle} ${projectName ? `- ${projectName}` : ''}</h3>
+        <div class="result-item">
+          <span class="result-label"><i class="fas fa-square" style="color: var(--primary)"></i> ${translations[currentLang].calcResultsTraditionalUnits}</span>
+          <span class="result-value">${beegha} ${translations[currentLang].unitBeegha}, ${bisva} ${translations[currentLang].unitBisva}, ${biswansi} ${translations[currentLang].unitBiswansi}</span>
+        </div>
+      `;
+
+      // Optional conversions based on checkboxes
+      const totalBisva = (beegha * 20) + bisva + (parseFloat(biswansi) / 20); // Total area in Bisva
+      const showAcre = document.getElementById('showAcre').checked;
+      const showHectare = document.getElementById('showHectare').checked;
+      const showSqft = document.getElementById('showSqft').checked;
+      const showSqm = document.getElementById('showSqm').checked;
+
+      // Approximate conversion factors for traditional units to standard ones (these can vary greatly by region)
+      const SQ_FT_PER_BISVA = 54.45; // Approximate value
+      const ACRES_PER_BISVA = 1 / 96; // If 1 Acre = 96 Bisva (highly variable)
+      const HECTARES_PER_ACRE = 0.404686;
+      const SQM_PER_ACRE = 4046.86;
+
+      if (showAcre) {
+        const acres = totalBisva * ACRES_PER_BISVA;
+        result += `
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-map-marked-alt"></i> ${translations[currentLang].calcResultsAcres}</span>
+            <span class="result-value">${acres.toFixed(6)}</span>
+          </div>
+        `;
+      }
+
+      if (showHectare) {
+        const hectares = (totalBisva * ACRES_PER_BISVA) * HECTARES_PER_ACRE;
+        result += `
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-globe-asia"></i> ${translations[currentLang].calcResultsHectares}</span>
+            <span class="result-value">${hectares.toFixed(6)}</span>
+          </div>
+        `;
+      }
+
+      if (showSqft) {
+        const sqft = totalBisva * SQ_FT_PER_BISVA;
+        result += `
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-ruler"></i> ${translations[currentLang].calcResultsSqFeet}</span>
+            <span class="result-value">${sqft.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      if (showSqm) {
+        const sqm = (totalBisva * ACRES_PER_BISVA) * SQM_PER_ACRE;
+        result += `
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-ruler-combined"></i> ${translations[currentLang].calcResultsSqMeters}</span>
+            <span class="result-value">${sqm.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Add calculation details
+      result += `
+        <div class="divider"></div>
+        <div class="result-item">
+          <span class="result-label"><i class="fas fa-info-circle"></i> ${translations[currentLang].calcMethod}</span>
+          <span class="result-value">${translations[currentLang].calcMethodValue}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><i class="fas fa-calendar-alt"></i> ${translations[currentLang].calculatedOn}</span>
+          <span class="result-value">${new Date().toLocaleString()}</span>
+        </div>
+      `;
+
+      outputDiv.innerHTML = result;
+      document.getElementById('exportButtons').style.display = 'flex';
+    }
+
+    // Reset land area form
+    function resetForm() {
+      document.getElementById('calculatorForm').reset();
+      document.getElementById('output').innerHTML = `
+        <h3 data-i18n="calcResultsTitle"><i class="fas fa-chart-bar"></i> ${translations[document.documentElement.lang].calcResultsTitle}</h3>
+        <p data-i18n="calcResultsInitialText">${translations[document.documentElement.lang].calcResultsInitialText}</p>
+      `;
+      document.getElementById('exportButtons').style.display = 'none';
+
+      // Reset map layers if map is initialized
+      if (window.map && window.drawnItems) {
+        window.drawnItems.clearLayers();
+        // Optionally recenter map
+        window.map.setView([28.6139, 77.2090], 15);
+      }
+    }
+
+    // Brick Calculator Functions
+    // Enhanced conversion factors (now includes mm)
+    const lengthConversionFactors = {
+      'm': 1,        // meter (base)
+      'ft': 0.3048,  // feet to meter
+      'in': 0.0254,  // inch to meter
+      'cm': 0.01,    // centimeter to meter
+      'mm': 0.001    // millimeter to meter
+    };
+
+    const areaConversionFactors = {
+      'm2': 1,       // square meter (base)
+      'ft2': 0.09290304 // square feet to square meter (precise)
+    };
+
+    // Material Constants (more precise values)
+    const CEMENT_DENSITY_KG_PER_M3 = 1440;    // Portland cement
+    const LIME_DENSITY_KG_PER_M3 = 1350;      // Hydrated lime (approx)
+    const SAND_DENSITY_KG_PER_M3 = 1600;      // Dry loose sand (approx)
+    const SAND_COMPACTED_DENSITY = 1680;      // Compacted sand (approx)
+    const CEMENT_BAG_WEIGHT_KG = 50;          // Standard bag weight
+    const WET_TO_DRY_MORTAR_FACTOR = 1.33;    // Volume increase from dry to wet for typical mortar (approx)
+    const M3_TO_CUBIC_FEET = 35.3147;         // Cubic meters to cubic feet
+    const M3_TO_LITERS = 1000;                // Cubic meters to liters
+
+    // Bond pattern multipliers (affect brick count due to variations in jointing/wastage specific to pattern)
+    // These are illustrative and may need fine-tuning based on actual construction practices.
+    const BOND_PATTERN_FACTORS = {
+      'stretcher': 1.0,
+      'english': 1.05, // Slightly more complex, minor increase
+      'flemish': 1.07, // More complex, higher increase
+      'header': 1.15,  // Significantly more bricks per area due to orientation
+      'stack': 1.0     // Simple, minimal additional factor
+    };
+
+    // Helper function to get input value in meters
+    function getInputValueInMeters(inputId, unitId) {
+      const value = parseFloat(document.getElementById(inputId).value);
+      const unit = document.getElementById(unitId).value;
+      const currentLang = document.documentElement.lang;
+
+      if (isNaN(value)) {
+        const labelElement = document.querySelector(`label[for="${inputId}"]`);
+        const labelText = labelElement ? labelElement.textContent.replace(':', '').trim() : inputId;
+        throw new Error(`${translations[currentLang].brickCalcErrorInput}"${labelText}". ${translations[currentLang].brickCalcErrorPositive}`);
+      }
+      return value * lengthConversionFactors[unit];
+    }
+
+    // Helper function to get area input value in square meters
+    function getAreaValueInSquareMeters(inputId, unitId) {
+      const value = parseFloat(document.getElementById(inputId).value);
+      const unit = document.getElementById(unitId).value;
+      if (isNaN(value)) return 0; // Return 0 if invalid, as it's typically for openings
+      return value * areaConversionFactors[unit];
+    }
+
+    // Function to set brick dimensions based on preset
+    function setBrickPreset() {
+      const preset = document.getElementById('brickPreset').value;
+      const brickLengthInput = document.getElementById('brickLength');
+      const brickWidthInput = document.getElementById('brickWidth');
+      const brickHeightInput = document.getElementById('brickHeight');
+      const brickDensityInput = document.getElementById('brickDensity');
+
+      // Set units to mm for presets to ensure consistency
+      document.getElementById('brickLengthUnit').value = 'mm';
+      document.getElementById('brickWidthUnit').value = 'mm';
+      document.getElementById('brickHeightUnit').value = 'mm';
+
+      switch(preset) {
+        case 'indian_standard':
+          brickLengthInput.value = 230;
+          brickWidthInput.value = 115;
+          brickHeightInput.value = 75;
+          brickDensityInput.value = 1920;
+          break;
+        case 'uk_standard':
+          brickLengthInput.value = 215;
+          brickWidthInput.value = 102.5;
+          brickHeightInput.value = 65;
+          brickDensityInput.value = 1900;
+          break;
+        case 'us_standard':
+          brickLengthInput.value = 203;
+          brickWidthInput.value = 92;
+          brickHeightInput.value = 57;
+          brickDensityInput.value = 2000;
+          break;
+        case 'australian_standard':
+          brickLengthInput.value = 230;
+          brickWidthInput.value = 110;
+          brickHeightInput.value = 76;
+          brickDensityInput.value = 1950;
+          break;
+        case 'modular_metric':
+          brickLengthInput.value = 190;
+          brickWidthInput.value = 90;
+          brickHeightInput.value = 90;
+          brickDensityInput.value = 2050;
+          break;
+        case 'jumbo_metric':
+          brickLengthInput.value = 290;
+          brickWidthInput.value = 90;
+          brickHeightInput.value = 90;
+          brickDensityInput.value = 2100;
+          break;
+        case 'custom':
+        default:
+          // For custom, keep the current values, do not reset them.
+          break;
+      }
+    }
+
+    function calculateBricks() {
+      const outputDiv = document.getElementById('brickOutput');
+      let errorMessage = '';
+      const currentLang = document.documentElement.lang;
+
+      try {
+        // Get Wall Dimensions (converted to meters)
+        const wallLength = getInputValueInMeters('wallLength', 'wallLengthUnit');
+        const wallHeight = getInputValueInMeters('wallHeight', 'wallHeightUnit');
+        const wallThickness = getInputValueInMeters('wallThickness', 'wallThicknessUnit');
+        const wallOpeningsArea = getAreaValueInSquareMeters('wallOpenings', 'wallOpeningsUnit');
+
+        // Get Brick Dimensions (converted to meters)
+        const brickLength = getInputValueInMeters('brickLength', 'brickLengthUnit');
+        const brickWidth = getInputValueInMeters('brickWidth', 'brickWidthUnit');
+        const brickHeight = getInputValueInMeters('brickHeight', 'brickHeightUnit');
+        const brickDensity = parseFloat(document.getElementById('brickDensity').value);
+
+        // Get Mortar Specifications
+        const mortarThickness = getInputValueInMeters('mortarThickness', 'mortarThicknessUnit');
+        const cementPart = parseFloat(document.getElementById('cementPart').value);
+        const sandPart = parseFloat(document.getElementById('sandPart').value);
+        const mortarType = document.getElementById('mortarType').value;
+        const mortarAdditives = parseFloat(document.getElementById('mortarAdditives').value) / 100;
+
+        // Get Construction Factors
+        const bondPattern = document.getElementById('bondPattern').value;
+        const wasteFactor = parseFloat(document.getElementById('wasteFactor').value) / 100;
+        const workmanshipFactor = parseFloat(document.getElementById('workmanshipFactor').value) / 100;
+        const bulkingFactor = parseFloat(document.getElementById('bulkingFactor').value) / 100;
+        const bondPatternMultiplier = BOND_PATTERN_FACTORS[bondPattern] || 1.0;
+
+        // --- Input Validation ---
+        if (wallLength <= 0 || wallHeight <= 0 || wallThickness <= 0) {
+          errorMessage = translations[currentLang].brickCalcErrorWallDims;
+        } else if (brickLength <= 0 || brickWidth <= 0 || brickHeight <= 0) {
+          errorMessage = translations[currentLang].brickCalcErrorBrickDims;
+        } else if (mortarThickness < 0) {
+          errorMessage = translations[currentLang].brickCalcErrorMortarNeg;
+        } else if (isNaN(cementPart) || isNaN(sandPart) || cementPart <= 0 || sandPart <= 0) {
+          errorMessage = translations[currentLang].brickCalcErrorMortarRatio;
+        } else if (brickDensity <= 0) {
+          errorMessage = translations[currentLang].brickCalcErrorBrickDensity;
+        } else if (wallOpeningsArea < 0) {
+          errorMessage = translations[currentLang].brickCalcErrorOpeningsNeg;
+        }
+
+        if (errorMessage) throw new Error(errorMessage);
+
+        // --- Advanced Calculations ---
+
+        // Calculate net wall area (subtracting openings)
+        const grossWallArea = wallLength * wallHeight;
+        const netWallArea = Math.max(0, grossWallArea - wallOpeningsArea);
+        const wallVolume = netWallArea * wallThickness;
+
+        if (netWallArea <= 0) {
+            errorMessage = translations[currentLang].brickCalcErrorNetWallArea;
+            throw new Error(errorMessage);
+        }
+
+        // Dimensions of one brick unit INCLUDING mortar (in meters)
+        const brickLengthWithMortar = brickLength + mortarThickness;
+        const brickWidthWithMortar = brickWidth + mortarThickness;
+        const brickHeightWithMortar = brickHeight + mortarThickness;
+
+        // Volume occupied by one brick unit in the wall (including mortar joints)
+        const volumeOfOneBrickUnitInWall = brickLengthWithMortar * brickWidthWithMortar * brickHeightWithMortar;
+
+        // Number of brick units (theoretical)
+        let numberOfBrickUnits = wallVolume / volumeOfOneBrickUnitInWall;
+
+        // Apply bond pattern multiplier
+        numberOfBrickUnits *= bondPatternMultiplier;
+
+        // Volume of actual brick material (solid volume of bricks)
+        const volumeOfOneDryBrick = brickLength * brickWidth * brickHeight;
+        const totalVolumeOfDryBricks = numberOfBrickUnits * volumeOfOneDryBrick;
+
+        // Wet mortar volume (space filled by mortar)
+        // Ensure totalVolumeOfDryBricks does not exceed wallVolume (can happen with very small bricks/large mortar)
+        const wetMortarVolume = Math.max(0, wallVolume - totalVolumeOfDryBricks);
+
+        // Dry mortar volume (accounting for voids and water loss)
+        const dryMortarVolume = wetMortarVolume * WET_TO_DRY_MORTAR_FACTOR;
+
+        // --- Material Calculations for Mortar ---
+        let cementVolumeM3 = 0;
+        let sandVolumeM3 = 0;
+        let limeVolumeM3 = 0; // Only calculated if mortarType is lime or composite
+
+        const totalMixRatioParts = cementPart + sandPart; // Sum of ratio parts for cement mortar
+
+        if (mortarType === 'cement') {
+          cementVolumeM3 = (dryMortarVolume / totalMixRatioParts) * cementPart;
+          sandVolumeM3 = (dryMortarVolume / totalMixRatioParts) * sandPart;
+        } else if (mortarType === 'lime') {
+          // Assuming typical lime mortar ratio (e.g., 1 part lime: 3 parts sand) for calculation if not specified
+          // This is a simplification; actual lime mortar ratios can vary.
+          const limeMortarTotalParts = 1 + 3; // Example 1:3 lime:sand
+          limeVolumeM3 = (dryMortarVolume / limeMortarTotalParts) * 1;
+          sandVolumeM3 = (dryMortarVolume / limeMortarTotalParts) * 3;
+        } else if (mortarType === 'composite') {
+          // A common composite mortar might be (Cement:Lime:Sand) e.g., 1:0.25:6 (simplified)
+          // For simplicity, we'll proportion existing cementPart to include a lime component.
+          // This means cementPart effectively represents the cement+lime "binder" part.
+          const compositeBinderPart = cementPart; // Use the provided cementPart as total binder
+          const compositeSandPart = sandPart;
+
+          const compositeRatioSum = compositeBinderPart + compositeSandPart;
+
+          // Proportionally split the 'cementPart' volume between actual cement and lime
+          // For instance, assume 80% cement and 20% lime of the binder part
+          const cementInBinderRatio = 0.8;
+          const limeInBinderRatio = 0.2;
+
+          const totalBinderVolume = (dryMortarVolume / compositeRatioSum) * compositeBinderPart;
+          cementVolumeM3 = totalBinderVolume * cementInBinderRatio;
+          limeVolumeM3 = totalBinderVolume * limeInBinderRatio;
+          sandVolumeM3 = (dryMortarVolume / compositeRatioSum) * compositeSandPart;
+        }
+
+        // Adjust for additives - assume additives reduce volume of other materials slightly
+        if (mortarAdditives > 0 && dryMortarVolume > 0) {
+          const additiveVolume = dryMortarVolume * mortarAdditives;
+          // Distribute the reduction proportionally to cement and sand
+          const reductionFactor = 1 - mortarAdditives;
+          cementVolumeM3 *= reductionFactor;
+          sandVolumeM3 *= reductionFactor;
+          limeVolumeM3 *= reductionFactor; // If applicable
+        }
+
+        // Calculate weights and quantities
+        const cementWeightKg = cementVolumeM3 * CEMENT_DENSITY_KG_PER_M3;
+        const cementBags = cementWeightKg / CEMENT_BAG_WEIGHT_KG;
+
+        // Sand calculations with bulking factor for loose volume
+        const sandVolumeLooseM3 = sandVolumeM3 * (1 + bulkingFactor);
+        const sandWeightLooseKg = sandVolumeLooseM3 * SAND_DENSITY_KG_PER_M3; // Weight if measured loose
+        const sandWeightCompactedKg = sandVolumeM3 * SAND_COMPACTED_DENSITY; // Corrected: Declare this variable
+
+        // Brick calculations with waste and workmanship factors
+        const totalBricksWithWaste = numberOfBrickUnits * (1 + wasteFactor + workmanshipFactor);
+        const totalBrickWeightKg = totalVolumeOfDryBricks * brickDensity;
+
+        // Calculate lime weight if applicable
+        const limeWeightKg = limeVolumeM3 * LIME_DENSITY_KG_PER_M3;
+
+        // Helper for formatting bond pattern name
+        const bondPatternName = translations[currentLang][`bond${bondPattern.charAt(0).toUpperCase() + bondPattern.slice(1)}`];
+
+
+        // --- Display Results ---
+        outputDiv.innerHTML = `
+          <h3><i class="fas fa-check-circle"></i> ${translations[currentLang].precisionCalcResultsTitle}</h3>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-ruler-combined"></i> ${translations[currentLang].brickResultsNetWallArea}</span>
+            <span class="result-value">${netWallArea.toFixed(3)} m² (${(netWallArea * 10.764).toFixed(3)} ft²)</span>
+          </div>
+
+          <h4 style="margin-top:20px;color:var(--primary);border-bottom:1px solid var(--light-gray);padding-bottom:8px;">
+            <i class="fas fa-bricks"></i> ${translations[currentLang].brickResultsBrickRequirements}
+          </h4>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-cube"></i> ${translations[currentLang].brickResultsTheoreticalBricks}</span>
+            <span class="result-value">${Math.ceil(numberOfBrickUnits).toLocaleString()} Nos.</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-box-open"></i> ${translations[currentLang].brickResultsTotalBricks.replace('{waste}', Math.round(wasteFactor*100)).replace('{workmanship}', Math.round(workmanshipFactor*100))}</span>
+            <span class="result-value">${Math.ceil(totalBricksWithWaste).toLocaleString()} Nos.</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-weight-hanging"></i> ${translations[currentLang].brickResultsTotalBrickWeight}</span>
+            <span class="result-value">${totalBrickWeightKg.toFixed(1)} kg (${(totalBrickWeightKg * 2.205).toFixed(1)} lbs)</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-border-style"></i> ${translations[currentLang].brickResultsBondPatternFactor.replace('{bondPattern}', bondPatternName)}:</span>
+            <span class="result-value">${bondPatternMultiplier.toFixed(3)}x</span>
+          </div>
+
+          <h4 style="margin-top:20px;color:var(--primary);border-bottom:1px solid var(--light-gray);padding-bottom:8px;">
+            <i class="fas fa-mortar-pestle"></i> ${translations[currentLang].brickResultsMortarRequirements}
+          </h4>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-tint"></i> ${translations[currentLang].brickResultsWetMortarVolume}</span>
+            <span class="result-value">${wetMortarVolume.toFixed(4)} m³ (${(wetMortarVolume * M3_TO_LITERS).toFixed(1)} liters)</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-tint-slash"></i> ${translations[currentLang].brickResultsDryMortarVolume}</span>
+            <span class="result-value">${dryMortarVolume.toFixed(4)} m³ (${(dryMortarVolume * M3_TO_CUBIC_FEET).toFixed(2)} ft³)</span>
+          </div>
+          
+          ${mortarType === 'cement' || mortarType === 'composite' ? `
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-pallet"></i> ${translations[currentLang].brickResultsCementRequired.replace('{cementPart}', cementPart).replace('{sandPart}', sandPart).replace('{mortarType}', translations[currentLang][`mortarType${mortarType.charAt(0).toUpperCase() + mortarType.slice(1)}`])}:</span>
+            <span class="result-value">${cementBags.toFixed(2)} bags (${cementWeightKg.toFixed(1)} kg)</span>
+          </div>` : ''}
+          
+          ${mortarType === 'lime' || mortarType === 'composite' ? `
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-mortar-pestle"></i> ${translations[currentLang].brickResultsLimeRequired}</span>
+            <span class="result-value">${limeVolumeM3.toFixed(4)} m³ (${limeWeightKg.toFixed(1)} kg)</span>
+          </div>` : ''}
+          
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-mountain"></i> ${translations[currentLang].brickResultsSandRequired.replace('{bulkingFactor}', (bulkingFactor*100).toFixed(0))}:</span>
+            <span class="result-value">${sandVolumeM3.toFixed(4)} m³ (${translations[currentLang].brickResultsCompacted})<br>${sandVolumeLooseM3.toFixed(4)} m³ (${translations[currentLang].brickResultsLoose}) (${sandWeightLooseKg.toFixed(1)} kg ${translations[currentLang].brickResultsLoose})</span>
+          </div>
+
+          <h4 style="margin-top:20px;color:var(--primary);border-bottom:1px solid var(--light-gray);padding-bottom:8px;">
+            <i class="fas fa-chart-line"></i> ${translations[currentLang].brickResultsPerformanceMetrics}
+          </h4>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-border-all"></i> ${translations[currentLang].bricksPerSqM.replace('{wallThickness}', (wallThickness*1000).toFixed(0))}</span>
+            <span class="result-value">${(numberOfBrickUnits / netWallArea).toFixed(2)} Nos.</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-boxes"></i> ${translations[currentLang].bricksPerCuM}</span>
+            <span class="result-value">${(numberOfBrickUnits / wallVolume).toFixed(2)} Nos.</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-percentage"></i> ${translations[currentLang].brickToMortarRatio}</span>
+            <span class="result-value">${(totalVolumeOfDryBricks/wallVolume*100).toFixed(1)}% ${translations[currentLang].brickResultsBrick} : ${(wetMortarVolume/wallVolume*100).toFixed(1)}% ${translations[currentLang].brickResultsMortar}</span>
+          </div>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-weight"></i> ${translations[currentLang].estimatedWallWeight}</span>
+            <span class="result-value">${(totalBrickWeightKg + cementWeightKg + sandWeightCompactedKg + limeWeightKg).toFixed(1)} kg<br>(${((totalBrickWeightKg + cementWeightKg + sandWeightCompactedKg + limeWeightKg)/netWallArea).toFixed(1)} kg/m²)</span>
+          </div>
+
+          <p class="warning-message" style="margin-top:20px;">
+            <i class="fas fa-info-circle"></i> ${translations[currentLang].noteEngineeringEstimates}
+          </p>
+
+          <div class="result-item">
+            <span class="result-label"><i class="fas fa-calendar-alt"></i> ${translations[currentLang].calculatedOn}</span>
+            <span class="result-value">${new Date().toLocaleString()}</span>
+          </div>
+        `;
+
+      } catch (error) {
+        outputDiv.innerHTML = `
+          <h3><i class="fas fa-exclamation-triangle"></i> ${translations[currentLang].brickCalcError}</h3>
+          <p class="warning-message"><i class="fas fa-info-circle"></i> ${error.message || translations[currentLang].brickCalcErrorInput + 'An unknown error occurred. Please check your inputs.'}</p>
+        `;
+      }
+    }
+
+    // Reset brick calculator form
+    function resetBrickForm() {
+      document.getElementById('brickCalculatorForm').reset();
+      document.getElementById('brickPreset').value = 'custom';
+      setBrickPreset(); // Re-apply custom settings or initial values
+
+      // Reset unit selections to default
+      document.getElementById('wallLengthUnit').value = 'm';
+      document.getElementById('wallHeightUnit').value = 'm';
+      document.getElementById('wallThicknessUnit').value = 'mm';
+      document.getElementById('wallOpeningsUnit').value = 'm2';
+      document.getElementById('brickLengthUnit').value = 'mm';
+      document.getElementById('brickWidthUnit').value = 'mm';
+      document.getElementById('brickHeightUnit').value = 'mm';
+      document.getElementById('mortarThicknessUnit').value = 'mm';
+
+      // Reset mortar ratio and other factors explicitly to avoid stale values
+      document.getElementById('cementPart').value = '1';
+      document.getElementById('sandPart').value = '6';
+      document.getElementById('mortarType').value = 'cement';
+      document.getElementById('mortarAdditives').value = '0';
+      document.getElementById('bondPattern').value = 'stretcher';
+      document.getElementById('wasteFactor').value = '5';
+      document.getElementById('workmanshipFactor').value = '2';
+      document.getElementById('bulkingFactor').value = '20';
+
+      document.getElementById('brickOutput').innerHTML = `
+        <h3 data-i18n="precisionCalcResultsTitle"><i class="fas fa-chart-bar"></i> ${translations[document.documentElement.lang].precisionCalcResultsTitle}</h3>
+        <p data-i18n="precisionCalcResultsInitialText">${translations[document.documentElement.lang].precisionCalcResultsInitialText}</p>
+      `;
+    }
+
+    function showAdvancedOptions() {
+      const currentLang = document.documentElement.lang;
+      const message = translations[currentLang].dialogAdvancedOptionsMessage;
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--lighter);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        z-index: 2000;
+        width: 90%;
+        max-width: 450px;
+        text-align: center;
+        border: 1px solid var(--light-gray);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      `;
+      modal.innerHTML = `
+        <h4 style="color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 0;">
+          <i class="fas fa-info-circle"></i> ${translations[currentLang].dialogAdvancedOptionsTitle}
+        </h4>
+        <p style="color: var(--dark); font-size: 1rem; line-height: 1.5; margin: 0;">${message}</p>
+        <button class="btn btn-secondary" style="width: auto; padding: 10px 20px;">${translations[currentLang].dialogGotIt}</button>
+      `;
+      document.body.appendChild(modal);
+
+      modal.querySelector('button').addEventListener('click', () => {
+        modal.remove();
+      });
+    }
+
+    // Area Unit Converter Functions
+    function convertArea() {
+      const inputValue = parseFloat(document.getElementById('converterInputValue').value);
+      const fromUnit = document.getElementById('converterFromUnit').value;
+      const toUnit = document.getElementById('converterToUnit').value;
+      const converterOutput = document.getElementById('converterOutput');
+      const currentLang = document.documentElement.lang;
+
+      if (isNaN(inputValue)) {
+        converterOutput.innerHTML = `
+          <h3><i class="fas fa-exclamation-triangle"></i> ${translations[currentLang].conversionError}</h3>
+          <p class="warning-message"><i class="fas fa-info-circle"></i> ${translations[currentLang].conversionErrorInput}</p>
+        `;
+        return;
+      }
+
+      // Define conversion factors to a common base unit (square meters)
+      // Note: Traditional units like Biswansi, Bisva, Beegha can vary significantly by region.
+      // These are approximate values common in some parts of India/Nepal.
+      // ALWAYS verify these factors for your specific region and project requirements.
+      const conversionFactors = {
+        square_meters: 1,
+        square_feet: 0.09290304, // 1 sq ft = 0.09290304 sq m
+        acres: 4046.8564224, // 1 acre = 4046.8564224 sq m
+        hectares: 10000,     // 1 hectare = 10000 sq m
+        square_yards: 0.83612736, // 1 sq yard = 0.83612736 sq m
+        square_kilometers: 1000000, // 1 sq km = 1,000,000 sq m
+        square_miles: 2589988.110336, // 1 sq mile = 2,589,988.110336 sq m
+        biswansi: 2.10775, // Approximate: 1 Biswansi = ~2.10775 sq m (based on 1 Beegha = 843.10 sq m, 1 Beegha = 400 Biswansi)
+        bisva: 42.155,    // Approximate: 1 Bisva = 20 Biswansi = ~42.155 sq m
+        beegha: 843.10    // Approximate: 1 Beegha = 20 Bisva = ~843.10 sq m
+      };
+
+      if (!conversionFactors[fromUnit] || !conversionFactors[toUnit]) {
+        converterOutput.innerHTML = `
+          <h3><i class="fas fa-exclamation-triangle"></i> ${translations[currentLang].conversionError}</h3>
+          <p class="warning-message"><i class="fas fa-info-circle"></i> ${translations[currentLang].conversionErrorUnsupportedUnit}</p>
+        `;
+        return;
+      }
+
+      // Convert input to the base unit (square meters)
+      const valueInSquareMeters = inputValue * conversionFactors[fromUnit];
+
+      // Convert from base unit to the target unit
+      const convertedValue = valueInSquareMeters / conversionFactors[toUnit];
+
+      // Helper function to get translated unit name
+      function getTranslatedUnit(unitKey) {
+          const unitMappings = {
+              'square_meters': 'unitSqMeters',
+              'square_feet': 'unitSqFeet',
+              'acres': 'unitAcres',
+              'hectares': 'unitHectares',
+              'square_yards': 'unitSqYards',
+              'square_kilometers': 'unitSqKm',
+              'square_miles': 'unitSqMiles',
+              'biswansi': 'unitBiswansi',
+              'bisva': 'unitBisva',
+              'beegha': 'unitBeegha',
+          };
+          return translations[currentLang][unitMappings[unitKey]] || unitKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
+
+
+      converterOutput.innerHTML = `
+        <h3><i class="fas fa-chart-bar"></i> ${translations[currentLang].conversionResultsTitle}</h3>
+        <div class="result-item">
+          <span class="result-label"><i class="fas fa-exchange-alt"></i> ${translations[currentLang].conversionOriginalValue}</span>
+          <span class="result-value">${inputValue} ${getTranslatedUnit(fromUnit)}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><i class="fas fa-check-circle"></i> ${translations[currentLang].conversionConvertedValue}</span>
+          <span class="result-value">${convertedValue.toFixed(6)} ${getTranslatedUnit(toUnit)}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label"><i class="fas fa-calendar-alt"></i> ${translations[currentLang].convertedOn}</span>
+          <span class="result-value">${new Date().toLocaleString()}</span>
+        </div>
+      `;
+    }
+
+    // Reset area unit converter form
+    function resetConverterForm() {
+      document.getElementById('converterInputValue').value = '';
+      document.getElementById('converterFromUnit').value = 'square_meters';
+      document.getElementById('converterToUnit').value = 'square_meters';
+      document.getElementById('converterOutput').innerHTML = `
+        <h3 data-i18n="conversionResultsTitle"><i class="fas fa-chart-bar"></i> ${translations[document.documentElement.lang].conversionResultsTitle}</h3>
+        <p data-i18n="converterInitialText">${translations[document.documentElement.lang].converterInitialText}</p>
+      `;
+    }
+
+    // --- Export and Utility Functions ---
+
+    // Export to PDF
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const currentLang = document.documentElement.lang;
+
+      // Add title
+      doc.setFontSize(18);
+      doc.setTextColor(40, 167, 69); // Primary green
+      doc.text(translations[currentLang].pageTitle, 105, 20, { align: 'center' });
+
+      // Add project name if exists
+      const projectName = document.getElementById('projectName').value;
+      if (projectName) {
+        doc.setFontSize(14);
+        doc.setTextColor(52, 58, 64); // Dark color
+        doc.text(`Project: ${projectName}`, 105, 30, { align: 'center' });
+      }
+
+      // Add date
+      doc.setFontSize(10);
+      doc.setTextColor(108, 117, 125); // Gray color
+      doc.text(`${translations[currentLang].calculatedOn} ${new Date().toLocaleString()}`, 105, 40, { align: 'center' });
+
+      // Add results
+      doc.setFontSize(12);
+      doc.setTextColor(52, 58, 64); // Dark color
+
+      let targetResultsDiv;
+      let isBrickCalcResults = false;
+
+      // Determine which results to export
+      if (document.getElementById('output').innerHTML.includes(translations[currentLang].calcResultsTitle)) {
+          targetResultsDiv = document.getElementById('output');
+      } else if (document.getElementById('brickOutput').innerHTML.includes(translations[currentLang].precisionCalcResultsTitle)) {
+          targetResultsDiv = document.getElementById('brickOutput');
+          isBrickCalcResults = true;
+      } else if (document.getElementById('converterOutput').innerHTML.includes(translations[currentLang].conversionResultsTitle)) {
+          targetResultsDiv = document.getElementById('converterOutput');
+      } else {
+          showCustomModal(translations[currentLang].dialogNoResultsTitle, translations[currentLang].dialogNoResultsMessage);
+          return;
+      }
+
+
+      const resultItems = targetResultsDiv.querySelectorAll('.result-item');
+      let yPosition = 60; // Starting Y position for results
+
+      resultItems.forEach((item) => {
+        // Handle page breaks if content exceeds current page height
+        if (yPosition > 270) { // Approx height for content on A4 page
+          doc.addPage();
+          yPosition = 20; // Reset Y position for new page
+        }
+
+        const label = item.querySelector('.result-label').textContent;
+        const value = item.querySelector('.result-value').textContent;
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(label, 20, yPosition);
+        doc.setFont('helvetica', 'normal');
+        doc.text(value, 190, yPosition, { align: 'right' }); // Align value to the right
+
+        yPosition += 10; // Line height
+      });
+
+      // Add a note about estimates for brick calculator (if results are from there)
+      if (isBrickCalcResults) {
+        doc.setFontSize(9);
+        doc.setTextColor(100, 100, 100);
+        doc.text(translations[currentLang].noteEngineeringEstimates, 105, yPosition + 10, { align: 'center' });
+      }
+
+
+      // Add footer
+      doc.setFontSize(10);
+      doc.setTextColor(108, 117, 125); // Gray color
+      doc.text(translations[currentLang].copyrightText, 105, 290, { align: 'center' });
+
+      // Save the PDF
+      doc.save('GeoMeasure_Calculation_Report.pdf');
+    }
+
+    // Export to CSV
+    function exportToCSV() {
+      let csv = 'Category,Value\n';
+      const currentLang = document.documentElement.lang;
+
+      // Determine which results to export based on current active calculator or presence of results
+      let targetResultsDiv;
+      if (document.getElementById('output').innerHTML.includes(translations[currentLang].calcResultsTitle)) {
+          targetResultsDiv = document.getElementById('output');
+      } else if (document.getElementById('brickOutput').innerHTML.includes(translations[currentLang].precisionCalcResultsTitle)) {
+          targetResultsDiv = document.getElementById('brickOutput');
+      } else if (document.getElementById('converterOutput').innerHTML.includes(translations[currentLang].conversionResultsTitle)) {
+          targetResultsDiv = document.getElementById('converterOutput');
+      } else {
+          showCustomModal(translations[currentLang].dialogNoResultsTitle, translations[currentLang].dialogNoResultsMessage);
+          return;
+      }
+
+      const resultItems = targetResultsDiv.querySelectorAll('.result-item');
+      resultItems.forEach(item => {
+        // Remove commas from numbers to avoid breaking CSV format
+        const label = item.querySelector('.result-label').textContent.replace(/,/g, '');
+        const value = item.querySelector('.result-value').textContent.replace(/,/g, '');
+        csv += `"${label}","${value}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'GeoMeasure_Calculation_Data.csv');
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Print results
+    function printResults() {
+      window.print();
+    }
+
+    // Navigation functions for smooth scrolling
+    function scrollToCalculator() {
+      document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('mainClickBar').click(); // Expand if collapsed
+    }
+
+    function scrollToFAQ() {
+      document.getElementById('faq').scrollIntoView({ behavior: 'smooth' });
+      // Logic to expand FAQ section header if it exists and is collapsed
+      const faqSectionHeader = document.querySelector('#faq .section-header'); // If FAQ had a collapsible header
+      if (faqSectionHeader && !faqSectionHeader.classList.contains('active')) {
+        faqSectionHeader.click();
+      }
+    }
+
+    // Custom Modal for Coming Soon and other alerts
+    function showCustomModal(titleKey, messageKey) {
+        const currentLang = document.documentElement.lang;
+        const message = translations[currentLang][messageKey];
+        const title = translations[currentLang][titleKey];
+        const closeBtnText = translations[currentLang].dialogClose; // Use a generic close button text
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: var(--lighter);
+          padding: 30px;
+          border-radius: var(--border-radius);
+          box-shadow: var(--shadow-lg);
+          z-index: 2000;
+          width: 90%;
+          max-width: 400px;
+          text-align: center;
+          border: 1px solid var(--light-gray);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+        `;
+        modal.innerHTML = `
+          <h4 style="color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 0;">
+            <i class="fas fa-info-circle"></i> ${title}
+          </h4>
+          <p style="color: var(--dark); font-size: 1rem; line-height: 1.5; margin: 0;">${message}</p>
+          <button class="btn btn-secondary" style="width: auto; padding: 10px 20px;">${closeBtnText}</button>
+        `;
+        document.body.appendChild(modal);
+
+        modal.querySelector('button').addEventListener('click', () => {
+          modal.remove();
+        });
+    }
+
+    function showComingSoon() {
+        showCustomModal('dialogComingSoonTitle', 'dialogComingSoonMessage');
+    }
+
+
+    // --- DOM Content Loaded Listener ---
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Initialize Language
+      setLanguage(defaultLang);
+
+      // 2. Initialize sections as collapsed (except Area Unit Converter which is active by default in the original file)
+      document.getElementById('calculatorContent').classList.remove('active');
+      document.getElementById('mainClickBar').classList.remove('active');
+      document.getElementById('mainClickBar').querySelector('.arrow').style.transform = 'rotate(0)';
+
+      document.getElementById('brickCalculatorContent').classList.remove('active');
+      document.getElementById('brickCalculatorBar').classList.remove('active');
+      document.getElementById('brickCalculatorBar').querySelector('.arrow').style.transform = 'rotate(0)';
+
+      // Set initial display for toggleable sections that start hidden
+      document.getElementById('toolsContent').style.display = 'none';
+      document.getElementById('resourcesContent').style.display = 'none';
+      document.getElementById('companyContent').style.display = 'none'; // About Us/Professional Services content
+
+      // 3. Initialize brick preset dropdown
+      const brickPresetSelect = document.getElementById('brickPreset');
+      brickPresetSelect.addEventListener('change', setBrickPreset);
+      setBrickPreset(); // Initialize with default preset values
+
+      // 4. Highlight active nav link based on scroll position
+      const sections = document.querySelectorAll('main section');
+      const navLinks = document.querySelectorAll('nav a');
+
+      // Function to update active navigation link
+      const updateActiveNavLink = () => {
+        let current = 'home'; // Default to home if at the very top or no section is active
+
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          // Offset for when section is partly visible, consider header height (approx 70px)
+          if (pageYOffset >= (sectionTop - 100)) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+          }
+        });
+      };
+
+      // Add scroll event listener
+      window.addEventListener('scroll', updateActiveNavLink);
+      // Call once on load to set initial active link
+      updateActiveNavLink();
+
+      // Close mobile menu when a nav link is clicked
+      navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (navMenu.classList.contains('show')) {
+            navMenu.classList.remove('show');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
