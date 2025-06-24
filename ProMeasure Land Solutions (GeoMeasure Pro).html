@@ -3156,9 +3156,9 @@
       // Optional conversions based on checkboxes
       // These are approximate conversion factors for traditional units to standard ones (these can vary greatly by region)
       // Using common approximate values for UP/Bihar region where 1 Beegha (Pakka) = 27225 sq ft
-      const SQ_FT_PER_BEEGHA = 27225; // 1 Pakka Beegha = 27225 sq ft (approx)
-      const SQ_M_PER_BEEGHA = 2529.28; // 1 Pakka Beegha = 2529.28 sq m (approx)
-      const ACRES_PER_BEEGHA = 0.625; // If 1 Acre = 1.6 Beegha (approx)
+      const SQ_FT_PER_BEEGHA = 9075.052872; // 1 kachcha Beegha = 9075.052872 sq ft (approx)
+      const SQ_M_PER_BEEGHA = 843.100; // 1 kachcha Beegha = 843.100 sq m (approx)            // 1 pakka Beega = 3 kachcha beega
+      const ACRES_PER_BEEGHA = 0.625; // If 1 Acre = 1.6*3 Beegha (approx)
       const HECTARES_PER_ACRE = 0.404686;
 
       const totalSqFtFromBeegha = (beegha * SQ_FT_PER_BEEGHA) + (bisva * (SQ_FT_PER_BEEGHA / 20)) + (parseFloat(biswansi) * (SQ_FT_PER_BEEGHA / 400));
