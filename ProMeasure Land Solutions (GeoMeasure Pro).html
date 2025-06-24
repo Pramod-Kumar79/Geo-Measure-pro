@@ -657,12 +657,31 @@
     }
 
     .section-content {
-      display: grid;
+      /* Default styles for when it's closed */
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0; /* Start with opacity 0 for smooth fade-in */
+      transition: max-height 0.5s ease-out, padding 0.5s ease-out, opacity 0.5s ease-out;
+      
+      /* For grid layout when active */
+      display: grid; /* Keep display grid so it applies when active */
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Larger min-width for cards */
       gap: 30px; /* More spacing */
-      padding: 30px 0; /* Consistent padding */
-      margin-bottom: 30px;
+      margin-bottom: 30px; /* Consistent margin */
+
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--light-gray);
+      border-top: none; /* Blends with header */
     }
+
+    .section-content.active {
+      padding: 30px 0; /* Consistent padding */
+      max-height: 1000px; /* Sufficiently large for all content */
+      opacity: 1; /* Fade in */
+    }
+
 
     .card {
       background: var(--lighter);
@@ -727,14 +746,26 @@
 
     /* Company Info (About Us) */
     .company-info {
-      padding: 30px 0;
+      padding: 0; /* Removed initial padding, will be added by active class */
+      max-height: 0; /* Start collapsed */
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.5s ease-out, padding 0.5s ease-out, opacity 0.5s ease-out;
+
       background: var(--lighter);
-      border-radius: var(--border-radius);
+      border-radius: 0 0 var(--border-radius) var(--border-radius); /* Top corners are rounded by header */
       box-shadow: var(--shadow);
-      padding: 25px;
-      margin-top: 30px;
+      margin-top: 0; /* Blends with header */
       border: 1px solid var(--light-gray);
+      border-top: none;
     }
+
+    .company-info.active {
+      padding: 25px; /* Add padding when active */
+      max-height: 1500px; /* Sufficiently large */
+      opacity: 1;
+    }
+
 
     .company-info h4 {
       color: var(--primary-dark);
@@ -1710,8 +1741,8 @@
         </div>
       </section>
 
-      <section id="tools" class="expanded-section fade-in">
-        <div class="section-header" onclick="toggleSection('toolsContent', 'toolsArrow')">
+      <section id="tools" class="fade-in">
+        <div class="section-header" id="toolsHeader">
           <h3 data-i18n="toolsSectionTitle"><i class="fas fa-tools"></i> Professional Measurement Tools</h3>
           <i class="fas fa-chevron-down arrow" id="toolsArrow"></i>
         </div>
@@ -1760,8 +1791,8 @@
         </div>
       </section>
 
-      <section id="resources" class="expanded-section fade-in">
-        <div class="section-header" onclick="toggleSection('resourcesContent', 'resourcesArrow')">
+      <section id="resources" class="fade-in">
+        <div class="section-header" id="resourcesHeader">
           <h3 data-i18n="resourcesSectionTitle"><i class="fas fa-book-open"></i> Professional Resources</h3>
           <i class="fas fa-chevron-down arrow" id="resourcesArrow"></i>
         </div>
@@ -1902,10 +1933,10 @@
         </div>
       </section>
 
-      <section id="about" class="expanded-section fade-in">
-        <div class="section-header" onclick="toggleSection('companyContent', 'companyArrow')">
+      <section id="about" class="fade-in">
+        <div class="section-header" id="aboutHeader">
           <h3 data-i18n="aboutSectionTitle"><i class="fas fa-building"></i> Professional Services</h3>
-          <i class="fas fa-chevron-down arrow" id="companyArrow"></i>
+          <i class="fas fa-chevron-down arrow" id="aboutArrow"></i>
         </div>
         <div class="company-info" id="companyContent">
           <h4 data-i18n="aboutServicesTitle"><i class="fas fa-info-circle"></i> About Our Professional Services</h4>
@@ -2132,6 +2163,10 @@
         calcMethod: "Calculation Method:",
         calcMethodValue: "Average of opposite sides (Trapezoidal Approximation)",
         calculatedOn: "Calculated On:",
+        brickResultsBrick: "Brick", // Added for brick-to-mortar ratio
+        brickResultsMortar: "Mortar", // Added for brick-to-mortar ratio
+        brickResultsMortarRequirements: "Mortar Requirements", // Added for brick calculator section
+        brickResultsBrickRequirements: "Brick Requirements", // Added for brick calculator section
 
         // Brick Calculator
         brickCalcTitle: "Precision Brick & Material Calculator",
@@ -2496,6 +2531,10 @@
         calcMethod: "गणना विधि:",
         calcMethodValue: "विपरीत भुजाओं का औसत (ट्रेपेज़ोइडल अनुमान)",
         calculatedOn: "गणना की गई तिथि:",
+        brickResultsBrick: "ईंट",
+        brickResultsMortar: "मोर्टार",
+        brickResultsMortarRequirements: "मोर्टार आवश्यकताएँ",
+        brickResultsBrickRequirements: "ईंट आवश्यकताएँ",
 
         // Brick Calculator
         brickCalcTitle: "सटीक ईंट और सामग्री कैलकुलेटर",
@@ -2719,7 +2758,41 @@
         aboutPrivacySecurityTitle: "पेशेवर गोपनीयता और सुरक्षा",
         aboutPrivacySecurityP1: "हम पेशेवर उपयोगकर्ताओं के लिए डेटा सुरक्षा के उच्चतम मानकों का पालन करते हैं:",
         aboutPrivacySecurityL1: "सभी डेटा स्थानान्तरण के लिए एंड-टू-एंड एन्क्रिप्शन",
-        aboutPrivacySecurityL2: "ऑन-प्रिमाइसेस परिनियोजन विकल्प",
+        aboutPrivacySecurityL2: "ऑन-प्राइमाइसेस परिनियोजन विकल्प",
+        aboutPrivacySecurityL3: "जीडीपीआर शिकायत डेटा हैंडलिंग",
+        faqA4L4: "घुमावदार सीमाओं के लिए सिम्पसन के नियम का उपयोग करें",
+        faqA4L5: "यदि आवश्यक हो तो ढलान सुधारों का हिसाब दें",
+        faqA4P2: "हमारा सॉफ़्टवेयर अधिकतम सटीकता के लिए पेशेवर एल्गोरिदम स्वचालित रूप से लागू करता है।",
+        faqQ5: "मैं कौन सी पेशेवर रिपोर्ट तैयार कर सकता हूं?",
+        faqA5P1: "हमारा पेशेवर संस्करण सर्वेक्षण-ग्रेड रिपोर्ट तैयार करता है, जिसमें शामिल हैं:",
+        faqA5L1: "कानूनी क्षेत्र प्रमाण पत्र",
+        faqA5L2: "सर्वेक्षण प्लेट और रेखाचित्र",
+        faqA5L3: "सीमा विवरण",
+        faqA5L4: "गणना किए गए क्षेत्र सारांश",
+        faqA5L5: "समन्वय सूची",
+        faqA5L6: "कस्टम-ब्रांडेड रिपोर्ट",
+        faqA5P2: "सभी रिपोर्ट स्थानीय भूमि रिकॉर्ड आवश्यकताओं का पालन करती हैं।",
+
+        // About Section
+        aboutSectionTitle: "पेशेवर सेवाएँ",
+        aboutServicesTitle: "हमारी पेशेवर सेवाओं के बारे_में",
+        aboutServicesP1: "जियोमेजर प्रो की स्थापना 2015 में प्रमोद कुमार द्वारा की गई थी, जो कैडस्ट्रल सर्वेक्षण और भूमि माप में 20 से अधिक वर्षों के अनुभव के साथ एक लाइसेंस प्राप्त सर्वेक्षक हैं। हमारे उपकरण भारत, नेपाल और अंतरराष्ट्रीय स्तर पर 50,000 से अधिक पेशेवरों द्वारा विश्वसनीय हैं।",
+        aboutServicesP2: "हम पेशेवर-ग्रेड मापन उपकरण विकसित करने में विशेषज्ञ हैं जो पारंपरिक ज्ञान को आधुनिक तकनीक के साथ जोड़ते हैं। हमारी टीम में सर्वेक्षक, सॉफ्टवेयर इंजीनियर और जीआईएस विशेषज्ञ शामिल हैं जो भूमि पेशेवरों के लिए सटीक, विश्वसनीय उपकरण बनाने के लिए समर्पित हैं।",
+        aboutCertificationsTitle: "पेशेवर प्रमाणपत्र",
+        aboutCertificationsL1: "लाइसेंस प्राप्त सर्वेक्षण सॉफ्टवेयर प्रदाता (भारत)",
+        aboutCertificationsL2: "आईएसओ 9001:2015 प्रमाणित विकास प्रक्रिया",
+        aboutCertificationsL3: "इंटरनेशनल फेडरेशन ऑफ सर्वेयर्स (एफआईजी) के सदस्य",
+        aboutCertificationsL4: "शैक्षिक उपयोग के लिए भारतीय सर्वेक्षण विभाग द्वारा मान्यता प्राप्त",
+        aboutContactTitle: "पेशेवर संपर्क",
+        aboutContactP1: "पेशेवर सहायता, एंटरप्राइज़ लाइसेंसिंग, या कस्टम समाधान के लिए:",
+        contactEmail: "pro@geomeasure.com",
+        contactPhone: "+91 11 2345 6789",
+        contactAddress: "सर्वे हाउस, नई दिल्ली, भारत",
+        contactHours: "सोम-शुक्र: सुबह 9 बजे से शाम 6 बजे IST",
+        aboutPrivacySecurityTitle: "पेशेवर गोपनीयता और सुरक्षा",
+        aboutPrivacySecurityP1: "हम पेशेवर उपयोगकर्ताओं के लिए डेटा सुरक्षा के उच्चतम मानकों का पालन करते हैं:",
+        aboutPrivacySecurityL1: "सभी डेटा स्थानान्तरण के लिए एंड-टू-एंड एन्क्रिप्शन",
+        aboutPrivacySecurityL2: "ऑन-प्राइमाइसेस परिनियोजन विकल्प",
         aboutPrivacySecurityL3: "जीडीपीआर शिकायत डेटा हैंडलिंग",
         aboutPrivacySecurityL4: "नियमित सुरक्षा ऑडिट",
 
@@ -2863,19 +2936,20 @@
       navMenu.classList.toggle('show');
     });
 
-    // Function to toggle accordion sections (used for Calculators, Tools, Resources, About)
+    // Function to toggle accordion sections (used for Tools, Resources, About)
     function toggleSection(contentId, arrowId) {
       const content = document.getElementById(contentId);
       const arrow = document.getElementById(arrowId);
+      const header = arrow.parentNode; // The header element that contains the arrow and is clicked
 
-      if (content.style.display === 'none' || content.style.display === '') {
-        content.style.display = contentId === 'companyContent' ? 'block' : 'grid'; // 'companyContent' needs 'block' for contact methods
-        arrow.style.transform = 'rotate(180deg)';
-      } else {
-        content.style.display = 'none';
-        arrow.style.transform = 'rotate(0)';
-      }
+      // Toggle active class on the header and content
+      header.classList.toggle('active');
+      content.classList.toggle('active');
+
+      // Rotate arrow icon based on content's active state
+      arrow.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
     }
+
 
     // Function to toggle FAQ answers
     function toggleFaq(question) {
@@ -3024,29 +3098,31 @@
       // Conversion factors based on selected unit to a common base (Gattha)
       // Note: These conversion factors are specific to the original script's interpretation
       // of "traditional measurement system" and may vary by region.
+      // 1 Gattha = 99 inches (varies by region, e.g., UP, Bihar)
+      // Assuming 99 inches per Gattha for these conversions.
       switch(unit) {
         case 1: // Meter
-          // 1 Meter = approx 100/254 Gattha (based on 99 inches = 1 Gattha, and 1 inch = 0.0254 meters)
-          y = (y * 100) / (2.54 * 99);
-          v = (v * 100) / (2.54 * 99);
+          // 1 meter = 39.37 inches. 1 Gattha = 99 inches. So 1 meter = 39.37/99 Gattha
+          y = y * (39.37 / 99);
+          v = v * (39.37 / 99);
           break;
         case 2: // Feet
-          // 1 Foot = approx 12/99 Gattha (based on 99 inches = 1 Gattha, and 1 foot = 12 inches)
-          y = (Math.floor(y) + ((y - Math.floor(y)) * 10 / 12)) * 12 / 99; // Handles feet and inches part (feet.inches -> feet + (inches/12))
-          v = (Math.floor(v) + ((v - Math.floor(v)) * 10 / 12)) * 12 / 99;
+          // 1 Foot = 12 inches. 1 Gattha = 99 inches. So 1 foot = 12/99 Gattha
+          y = y * (12 / 99);
+          v = v * (12 / 99);
           break;
         case 3: // Gattha
           // No conversion needed, already in Gattha
           break;
         case 4: // Yard
-          // 1 Yard = 3 feet. So, 1 Yard = 36 inches. 1 Yard = 36/99 Gattha
-          y = y * 36 / 99;
-          v = v * 36 / 99;
+          // 1 Yard = 3 feet = 36 inches. 1 Gattha = 99 inches. So 1 Yard = 36/99 Gattha
+          y = y * (36 / 99);
+          v = v * (36 / 99);
           break;
         case 5: // Chain
-          // 1 Chain = 66 feet. So, 1 Chain = 66 * 12 inches. 1 Chain = (66 * 12) / 99 Gattha
-          y = y * 66 / 99;
-          v = v * 66 / 99;
+          // 1 Chain = 66 feet = 792 inches. 1 Gattha = 99 inches. So 1 Chain = 792/99 Gattha = 8 Gattha
+          y = y * (792 / 99); // Or directly y = y * 8;
+          v = v * (792 / 99); // Or directly v = v * 8;
           break;
         default:
           outputDiv.innerHTML = `
@@ -3057,8 +3133,9 @@
           return;
       }
 
-      // Calculate area in biswansi units (original formula assuming 3 biswansi per sq gattha)
-      let area = 3 * y * v; // total biswansi units (This conversion is highly regional and specific)
+      // Calculate area in biswansi units
+      // Assuming 1 square Gattha = 3 Biswansi (This is highly regional and specific, typical in some parts of UP/Bihar)
+      let area = 3 * y * v; // Total area in Biswansi
 
       // Convert to Beegha, Bisva, Biswansi (Traditional Indian Subcontinent Units)
       let beegha = Math.floor(area / 400); // 1 Beegha = 400 Biswansi
@@ -3077,20 +3154,24 @@
       `;
 
       // Optional conversions based on checkboxes
-      const totalBisva = (beegha * 20) + bisva + (parseFloat(biswansi) / 20); // Total area in Bisva
+      // These are approximate conversion factors for traditional units to standard ones (these can vary greatly by region)
+      // Using common approximate values for UP/Bihar region where 1 Beegha (Pakka) = 27225 sq ft
+      const SQ_FT_PER_BEEGHA = 27225; // 1 Pakka Beegha = 27225 sq ft (approx)
+      const SQ_M_PER_BEEGHA = 2529.28; // 1 Pakka Beegha = 2529.28 sq m (approx)
+      const ACRES_PER_BEEGHA = 0.625; // If 1 Acre = 1.6 Beegha (approx)
+      const HECTARES_PER_ACRE = 0.404686;
+
+      const totalSqFtFromBeegha = (beegha * SQ_FT_PER_BEEGHA) + (bisva * (SQ_FT_PER_BEEGHA / 20)) + (parseFloat(biswansi) * (SQ_FT_PER_BEEGHA / 400));
+      const totalSqMFromBeegha = (beegha * SQ_M_PER_BEEGHA) + (bisva * (SQ_M_PER_BEEGHA / 20)) + (parseFloat(biswansi) * (SQ_M_PER_BEEGHA / 400));
+
+
       const showAcre = document.getElementById('showAcre').checked;
       const showHectare = document.getElementById('showHectare').checked;
       const showSqft = document.getElementById('showSqft').checked;
       const showSqm = document.getElementById('showSqm').checked;
 
-      // Approximate conversion factors for traditional units to standard ones (these can vary greatly by region)
-      const SQ_FT_PER_BISVA = 54.45; // Approximate value
-      const ACRES_PER_BISVA = 1 / 96; // If 1 Acre = 96 Bisva (highly variable)
-      const HECTARES_PER_ACRE = 0.404686;
-      const SQM_PER_ACRE = 4046.86;
-
       if (showAcre) {
-        const acres = totalBisva * ACRES_PER_BISVA;
+        const acres = (totalSqMFromBeegha / 4046.8564224); // Convert total sq m to acres
         result += `
           <div class="result-item">
             <span class="result-label"><i class="fas fa-map-marked-alt"></i> ${translations[currentLang].calcResultsAcres}</span>
@@ -3100,7 +3181,7 @@
       }
 
       if (showHectare) {
-        const hectares = (totalBisva * ACRES_PER_BISVA) * HECTARES_PER_ACRE;
+        const hectares = totalSqMFromBeegha / 10000; // Convert total sq m to hectares
         result += `
           <div class="result-item">
             <span class="result-label"><i class="fas fa-globe-asia"></i> ${translations[currentLang].calcResultsHectares}</span>
@@ -3110,21 +3191,19 @@
       }
 
       if (showSqft) {
-        const sqft = totalBisva * SQ_FT_PER_BISVA;
         result += `
           <div class="result-item">
             <span class="result-label"><i class="fas fa-ruler"></i> ${translations[currentLang].calcResultsSqFeet}</span>
-            <span class="result-value">${sqft.toFixed(2)}</span>
+            <span class="result-value">${totalSqFtFromBeegha.toFixed(2)}</span>
           </div>
         `;
       }
 
       if (showSqm) {
-        const sqm = (totalBisva * ACRES_PER_BISVA) * SQM_PER_ACRE;
         result += `
           <div class="result-item">
             <span class="result-label"><i class="fas fa-ruler-combined"></i> ${translations[currentLang].calcResultsSqMeters}</span>
-            <span class="result-value">${sqm.toFixed(2)}</span>
+            <span class="result-value">${totalSqMFromBeegha.toFixed(2)}</span>
           </div>
         `;
       }
@@ -3731,12 +3810,12 @@
       let isBrickCalcResults = false;
 
       // Determine which results to export
-      if (document.getElementById('output').innerHTML.includes(translations[currentLang].calcResultsTitle)) {
+      if (document.getElementById('output').innerHTML.includes(translations[currentLang].calcResultsTitle) && document.getElementById('output').children.length > 1) { // Check if results are actually there
           targetResultsDiv = document.getElementById('output');
-      } else if (document.getElementById('brickOutput').innerHTML.includes(translations[currentLang].precisionCalcResultsTitle)) {
+      } else if (document.getElementById('brickOutput').innerHTML.includes(translations[currentLang].precisionCalcResultsTitle) && document.getElementById('brickOutput').children.length > 1) {
           targetResultsDiv = document.getElementById('brickOutput');
           isBrickCalcResults = true;
-      } else if (document.getElementById('converterOutput').innerHTML.includes(translations[currentLang].conversionResultsTitle)) {
+      } else if (document.getElementById('converterOutput').innerHTML.includes(translations[currentLang].conversionResultsTitle) && document.getElementById('converterOutput').children.length > 1) {
           targetResultsDiv = document.getElementById('converterOutput');
       } else {
           showCustomModal(translations[currentLang].dialogNoResultsTitle, translations[currentLang].dialogNoResultsMessage);
@@ -3789,11 +3868,11 @@
 
       // Determine which results to export based on current active calculator or presence of results
       let targetResultsDiv;
-      if (document.getElementById('output').innerHTML.includes(translations[currentLang].calcResultsTitle)) {
+      if (document.getElementById('output').innerHTML.includes(translations[currentLang].calcResultsTitle) && document.getElementById('output').children.length > 1) { // Check if results are actually there
           targetResultsDiv = document.getElementById('output');
-      } else if (document.getElementById('brickOutput').innerHTML.includes(translations[currentLang].precisionCalcResultsTitle)) {
+      } else if (document.getElementById('brickOutput').innerHTML.includes(translations[currentLang].precisionCalcResultsTitle) && document.getElementById('brickOutput').children.length > 1) {
           targetResultsDiv = document.getElementById('brickOutput');
-      } else if (document.getElementById('converterOutput').innerHTML.includes(translations[currentLang].conversionResultsTitle)) {
+      } else if (document.getElementById('converterOutput').innerHTML.includes(translations[currentLang].conversionResultsTitle) && document.getElementById('converterOutput').children.length > 1) {
           targetResultsDiv = document.getElementById('converterOutput');
       } else {
           showCustomModal(translations[currentLang].dialogNoResultsTitle, translations[currentLang].dialogNoResultsMessage);
@@ -3829,16 +3908,15 @@
     // Navigation functions for smooth scrolling
     function scrollToCalculator() {
       document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
-      document.getElementById('mainClickBar').click(); // Expand if collapsed
+      // Ensure the calculator section itself is open if it's currently collapsed
+      if (!document.getElementById('calculatorContent').classList.contains('active')) {
+          document.getElementById('mainClickBar').click(); // Simulate click to expand
+      }
     }
 
     function scrollToFAQ() {
       document.getElementById('faq').scrollIntoView({ behavior: 'smooth' });
-      // Logic to expand FAQ section header if it exists and is collapsed
-      const faqSectionHeader = document.querySelector('#faq .section-header'); // If FAQ had a collapsible header
-      if (faqSectionHeader && !faqSectionHeader.classList.contains('active')) {
-        faqSectionHeader.click();
-      }
+      // FAQ section is not collapsible by default, but if it were, we'd expand it here.
     }
 
     // Custom Modal for Coming Soon and other alerts
@@ -3893,18 +3971,42 @@
       setLanguage(defaultLang);
 
       // 2. Initialize sections as collapsed (except Area Unit Converter which is active by default in the original file)
+      // Land Area Calculator
       document.getElementById('calculatorContent').classList.remove('active');
       document.getElementById('mainClickBar').classList.remove('active');
       document.getElementById('mainClickBar').querySelector('.arrow').style.transform = 'rotate(0)';
 
+      // Brick Calculator
       document.getElementById('brickCalculatorContent').classList.remove('active');
       document.getElementById('brickCalculatorBar').classList.remove('active');
       document.getElementById('brickCalculatorBar').querySelector('.arrow').style.transform = 'rotate(0)';
 
-      // Set initial display for toggleable sections that start hidden
-      document.getElementById('toolsContent').style.display = 'none';
-      document.getElementById('resourcesContent').style.display = 'none';
-      document.getElementById('companyContent').style.display = 'none'; // About Us/Professional Services content
+      // Tools, Resources, About sections should also be collapsed initially
+      const toolsHeader = document.getElementById('toolsHeader');
+      const toolsContent = document.getElementById('toolsContent');
+      const resourcesHeader = document.getElementById('resourcesHeader');
+      const resourcesContent = document.getElementById('resourcesContent');
+      const aboutHeader = document.getElementById('aboutHeader');
+      const companyContent = document.getElementById('companyContent');
+
+      // Add event listeners for these new accordion headers
+      toolsHeader.addEventListener('click', () => toggleSection('toolsContent', 'toolsArrow'));
+      resourcesHeader.addEventListener('click', () => toggleSection('resourcesContent', 'resourcesArrow'));
+      aboutHeader.addEventListener('click', () => toggleSection('companyContent', 'aboutArrow')); // Note: companyContent for about section
+
+      // Ensure they start collapsed by removing the 'active' class (CSS handles initial hidden state)
+      toolsHeader.classList.remove('active');
+      toolsContent.classList.remove('active');
+      toolsHeader.querySelector('.arrow').style.transform = 'rotate(0)';
+
+      resourcesHeader.classList.remove('active');
+      resourcesContent.classList.remove('active');
+      resourcesHeader.querySelector('.arrow').style.transform = 'rotate(0)';
+
+      aboutHeader.classList.remove('active');
+      companyContent.classList.remove('active');
+      aboutHeader.querySelector('.arrow').style.transform = 'rotate(0)';
+
 
       // 3. Initialize brick preset dropdown
       const brickPresetSelect = document.getElementById('brickPreset');
